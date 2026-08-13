@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="container">
+
+            <div>
+                <div class="eyebrow">
+                    {{ home.eyebrow }}
+                </div>
+
+                <h1>
+                    {{ home.headline }}
+                </h1>
+
+                <p class="hero-description">
+                    {{ home.description }}
+                </p>
+
+                <div class="hero-actions">
+                    {% for action in home.actions %}
+                    <a href="{{ action.url }}" class="button {{ action.style }}">
+                        {{ action.label }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+            <div class="hero-visual">
+
+                <div class="orbit"></div>
+
+                <div class="hero-center">
+
+                    <strong>
+                        {{ home.visual_top }}
+                    </strong>
+
+                    <span>
+                        {{ home.visual_bottom }}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FEATURED WORK -->
+
+    <section id="work">
+
+        <div class="container">
+
+            <div class="section-header">
+
+                <div>
+                    <div class="eyebrow">
+                        {{ work.eyebrow }}
+                    </div>
+
+                    <h2 class="section-title">
+                        {{ work.title }}
+                    </h2>
+                </div>
+
+                <p class="section-description">
+                    {{ work.description }}
+                </p>
+
+            </div>
+
+
+            {% for category in categories %}
+            <div id="{{ category.id }}" class="category-block">
+
+                <div class="eyebrow">
+                    {{ "%02d"|format(loop.index) }} / {{ category.label }}
+                </div>
+
+                <div class="projects">
+
+                    {% for project in category.projects %}
+                    <a href="{{ url_for('project', project=project) }}" class="project">
+
+                        <div class="project-image">
+                            {% if project.cover_image %}
+                            <img src="{{ asset_url(project.cover_image) }}" alt="{{ project.title }}">
+                            {% else %}
+                            {{ project.image_label | default(project.title) }}
+                            {% endif %}
+                        </div>
+
+                        <div class="project-content">
+
+                            <div class="project-category">
+                                {{ project.tagline | default(category.label) }}
+                            </div>
+
+                            <h3 class="project-title">
+                                {{ project.title }}
+                            </h3>
+
+                            <p class="project-description">
+                                {{ project.summary }}
+                            </p>
+
+                            <div class="tags">
+                                {% for tag in project.technologies %}
+                                <span class="tag">{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+
+                        </div>
+
+                    </a>
+                    {% endfor %}
+
+                </div>
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- INTERSECTION -->
+
+    <section class="intersection">
+
+        <div class="container">
+
+            <div class="intersection-content">
+
+                <div class="eyebrow">
+                    {{ intersection.eyebrow }}
+                </div>
+
+                <h2>
+                    {% for line in intersection.lines %}
+                    {{ line.text }}
+                    <span class="intersection-word">{{ line.highlight }}</span>
+                    {% if not loop.last %}<br>{% endif %}
+                    {% endfor %}
+                </h2>
+
+                <p>
+                    {{ intersection.description }}
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ABOUT -->
+
+    <section id="about">
+
+        <div class="container">
+
+            <div class="about">
+
+                <div>
+                    <div class="eyebrow">
+                        {{ about.eyebrow }}
+                    </div>
+
+                    <h2>
+                        {{ about.title }}
+                    </h2>
+                </div>
+
+
+                <div class="about-text">
+
+                    {% for paragraph in about.paragraphs %}
+                    <p>{{ paragraph }}</p>
+                    {% endfor %}
+
+                    <div class="skills">
+
+                        {% for group in about.skills %}
+                        <div class="skill-group">
+
+                            <h3>{{ group.name }}</h3>
+
+                            <p>
+                                {{ group.skills_list | join(' · ') }}
+                            </p>
+
+                        </div>
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} — {{ site.name }}{% endblock %}
+
+{% block meta %}
+<meta name="description" content="{{ project.summary }}">
+<meta property="og:title" content="{{ project.title }} — {{ site.name }}">
+<meta property="og:description" content="{{ project.summary }}">
+<meta property="og:type" content="article">
+{% endblock %}
+
+{% block content %}
+
+    <section class="project-hero">
+
+        <div class="container">
+
+            <a href="{{ url_for('index') }}#{{ project.category_id }}" class="back-link">
+                ← Back to work
+            </a>
+
+            <div class="eyebrow">
+                {{ project.tagline | default(project.category_label) }}
+            </div>
+
+            <h1>
+                {{ project.title }}
+            </h1>
+
+            <p class="hero-description">
+                {{ project.summary }}
+            </p>
+
+            <div class="project-meta">
+                {% for tag in project.technologies %}
+                <span class="tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+
+            {% if project.links %}
+            <div class="project-links">
+                {% for link in project.links %}
+                <a href="{{ link.url }}" class="button {{ 'primary' if loop.first else 'secondary' }}" target="_blank" rel="noopener">
+                    {{ link.label }}
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if project.cover_image %}
+            <div class="project-cover">
+                <img src="{{ asset_url(project.cover_image) }}" alt="{{ project.title }}">
+            </div>
+            {% endif %}
+
+        </div>
+
+    </section>
+
+    {% if project.gallery %}
+    <section>
+        <div class="container">
+            <div class="project-body">
+                <div class="gallery">
+                    {% for image in project.gallery %}
+                    <figure class="gallery-item">
+                        <img src="{{ asset_url(image.path) }}" alt="{{ image.caption | default(project.title) }}">
+                        {% if image.caption %}
+                        <figcaption>{{ image.caption }}</figcaption>
+                        {% endif %}
+                    </figure>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <section>
+        <div class="container">
+            <div class="project-body">
+                {{ project.content | safe }}
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

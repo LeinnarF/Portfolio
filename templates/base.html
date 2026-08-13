@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}{{ site.name }} — {{ site.tagline }}{% endblock %}</title>
+
+    {% block meta %}
+    <meta name="description" content="{{ site.description }}">
+    <meta property="og:title" content="{{ site.name }} — {{ site.tagline }}">
+    <meta property="og:description" content="{{ site.description }}">
+    <meta property="og:type" content="website">
+    {% endblock %}
+
+    <link rel="stylesheet" href="{{ asset_url('css/style.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+<header>
+    <div class="container">
+        <nav>
+
+            <a href="{{ url_for('index') }}" class="logo">
+                {{ site.logo }}
+            </a>
+
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}#work">Work</a>
+                <a href="{{ url_for('index') }}#about">About</a>
+                <a href="{{ site.resume_url | default('#') }}">Resume</a>
+                <a href="{{ url_for('index') }}#contact">Contact</a>
+            </div>
+
+        </nav>
+    </div>
+</header>
+
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+
+<footer id="contact">
+
+    <div class="container">
+
+        <div class="footer-content">
+
+            <strong>
+                {{ site.logo }}
+            </strong>
+
+            <div class="footer-links">
+
+                {% for link in site.footer_links %}
+                <a href="{{ link.url }}"{% if link.url.startswith('http') %} target="_blank" rel="noopener"{% endif %}>
+                    {{ link.label }}
+                </a>
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>
+
+</body>
+</html>
