@@ -27,8 +27,8 @@ SITE = {
     ),
     "resume_url": "/resume.pdf",
     "footer_links": [
-        {"label": "GitHub", "url": "https://github.com/"},
-        {"label": "LinkedIn", "url": "https://linkedin.com/"},
+        {"label": "GitHub", "url": "https://github.com/LeinnarF"},
+        {"label": "LinkedIn", "url": "https://linkedin.com/in/leinnarf"},
         {"label": "Email", "url": "mailto:hilariofranniel@gmail.com"},
     ],
 }
@@ -80,7 +80,7 @@ ABOUT = {
         {"name": "Data", "skills_list": ["Python", "SQL", "Pandas", "NumPy", "Scikit-learn", "Visualization"]},
         {"name": "UX / UI", "skills_list": ["User Research", "Wireframing", "UI Design", "Prototyping"]},
         {"name": "Development", "skills_list": ["HTML", "CSS", "C/C++", "Python", "Git", "Linux"]},
-        {"name": "Tools", "skills_list": ["Figma", "Jupyter", "VS Code", "GitHub", "Streamlit"]},
+        {"name": "Tools", "skills_list": ["Figma", "Jupyter", "VS Code", "GitHub", "Streamlit", "Power BI"]},
     ],
 }
 
