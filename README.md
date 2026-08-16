@@ -59,15 +59,21 @@ links:
     url: https://github.com/you/my-project
   - label: Dataset
     url: https://example.com/dataset
-gallery:                        # optional — image gallery on the project page
-  - path: images/my-project/screen-1.png
-    caption: What this screen shows
 ---
 
 ## Overview
 
 Regular Markdown from here down — headings, paragraphs, ```code fences```,
 tables, and images all work and get styled to match the design.
+
+Place an image exactly where it belongs in the write-up with `[[path]]`,
+where `path` is relative to `assets/` (same convention as `cover_image`):
+
+[[images/my-project/screen-1.png|Optional caption shown under the image]]
+
+The caption after `|` is optional — `[[images/my-project/screen-1.png]]`
+alone works too, falling back to the filename as alt text. Put it on its
+own line with a blank line before and after, same as any other block.
 ```
 
 See `content/data/app-rating-prediction.md` and
@@ -87,7 +93,11 @@ See `content/data/app-rating-prediction.md` and
 | `cover_image`  | no       | path under `assets/`, shown on the homepage card      |
 | `image_label`  | no       | fallback text on the card if there's no `cover_image` |
 | `links`        | no       | list of `{label, url}` — buttons on the project page  |
-| `gallery`      | no       | list of `{path, caption}` — image grid on the project page |
+
+There is no `gallery` field — place images inline in the body with
+`[[path]]` / `[[path|caption]]` instead (see above). This puts each
+image next to the text it illustrates rather than pinned to a fixed
+spot on the page.
 
 Malformed front matter (wrong type, missing required field) is skipped
 with a printed warning at build time rather than crashing the whole build
@@ -113,10 +123,11 @@ portfolio/
 │   └── js/
 ├── static/               Generated output — do not edit directly, do not commit
 ├── src/                  Build logic
-│   ├── models.py         Pydantic Project/Link/GalleryImage
-│   ├── parser.py         Front matter + Markdown → HTML
+│   ├── models.py         Pydantic Project/Link
+│   ├── parser.py         Front matter + Markdown → HTML, inline [[image]] syntax
 │   ├── loader.py         Discovers and validates content/ into Projects
-│   └── builder.py        Renders templates, writes static/
+│   ├── builder.py        Renders templates, writes static/
+│   └── utils.py          Shared asset_url() path helper
 ├── main.py               Site copy + CLI
 └── requirements.txt
 ```
@@ -131,6 +142,11 @@ portfolio/
 - No deployment config (GitHub Actions / Netlify / Vercel) — `static/` is
   built locally and would need to be uploaded or wired to CI.
 - `assets/js/` and `assets/images/` exist but are currently empty.
+- The `.gallery` grid CSS class (side-by-side image layout) is still in
+  `style.css` but unused by any template now — it's a manual escape hatch
+  if you ever want two images side by side: wrap raw HTML directly in a
+  Markdown file, e.g. `<div class="gallery">...`. Not documented as a
+  first-class feature since it breaks the plain-Markdown authoring flow.
 
 ## Requirements
 
