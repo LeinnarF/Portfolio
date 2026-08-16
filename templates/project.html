@@ -57,25 +57,6 @@
 
     </section>
 
-    {% if project.gallery %}
-    <section>
-        <div class="container">
-            <div class="project-body">
-                <div class="gallery">
-                    {% for image in project.gallery %}
-                    <figure class="gallery-item">
-                        <img src="{{ asset_url(image.path) }}" alt="{{ image.caption | default(project.title) }}">
-                        {% if image.caption %}
-                        <figcaption>{{ image.caption }}</figcaption>
-                        {% endif %}
-                    </figure>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </section>
-    {% endif %}
-
     <section>
         <div class="container">
             <div class="project-body">

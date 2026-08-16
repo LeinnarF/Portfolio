@@ -19,6 +19,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from .loader import group_by_category, load_projects
 from .models import Project
+from .utils import asset_url as _asset_url
 
 
 def _url_for(name: str, project: Project | None = None) -> str:
@@ -27,10 +28,6 @@ def _url_for(name: str, project: Project | None = None) -> str:
             raise ValueError("url_for('project', ...) requires a project argument")
         return f"/{project.slug}/"
     return "/"
-
-
-def _asset_url(path: str) -> str:
-    return f"/assets/{path.lstrip('/')}"
 
 
 def build(

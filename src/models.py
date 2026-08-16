@@ -25,11 +25,6 @@ class Link(BaseModel):
     url: str
 
 
-class GalleryImage(BaseModel):
-    path: str
-    caption: Optional[str] = None
-
-
 class Project(BaseModel):
     # identity
     slug: str
@@ -52,7 +47,8 @@ class Project(BaseModel):
     # media
     cover_image: Optional[str] = None
     image_label: Optional[str] = None  # fallback text shown on the card if no cover_image
-    gallery: list[GalleryImage] = Field(default_factory=list)
+    # NOTE: no `gallery` field — inline-place images in the Markdown body
+    # instead with [[path]] / [[path|caption]]. See parser.py.
 
     # links
     links: list[Link] = Field(default_factory=list)
