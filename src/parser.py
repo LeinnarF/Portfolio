@@ -13,15 +13,17 @@ Expected file shape:
 
     Markdown content here...
 
-    ![[images/data/eda-plot.png|Distribution of ratings before cleaning]]
+    ![[eda-plot.png|Distribution of ratings before cleaning]]
 
     More content after the image...
 
-Inline images use `![[path]]` or `![[path|caption]]` (Obsidian-style
-embed syntax), where `path` is relative to assets/ (same convention as
-`cover_image`). This replaces a front-matter `gallery` list — images
-live exactly where they're relevant in the write-up instead of being
-pinned to a fixed spot on the page.
+Inline images use `![[filename]]` or `![[filename|caption]]` (Obsidian-
+style embed syntax) — just the bare filename, no folder needed. It's
+always resolved to assets/images/<filename>, same as Obsidian resolving
+![[...]] against a single attachments folder regardless of where the
+note lives. This replaces a front-matter `gallery` list — images live
+exactly where they're relevant in the write-up instead of being pinned
+to a fixed spot on the page.
 
 Keeping this parser dumb on purpose — it doesn't know about the Project
 model or validation rules. That lives in models.py / loader.py, so this
@@ -49,6 +51,11 @@ _FRONT_MATTER_RE = re.compile(r"^[ \t]*---[ \t]*\n(.*?\n)---[ \t]*\n(.*)$", re.D
 # Path can't contain '|' or ']'; caption (optional) runs up to the closing ']]'.
 _INLINE_IMAGE_RE = re.compile(r"!\[\[\s*([^|\]]+?)\s*(?:\|\s*(.+?)\s*)?\]\]")
 
+# All inline-embedded images live flat under assets/images/, mirroring how
+# Obsidian resolves ![[filename]] against a single attachments folder
+# regardless of where the note lives — no category subfolder needed.
+_IMAGES_SUBDIR = "images"
+
 _MARKDOWN_EXTENSIONS = [
     "fenced_code",  # ```python ... ``` blocks
     "tables",  # pipe tables
@@ -63,7 +70,8 @@ class ParseError(Exception):
 
 def _render_inline_images(body: str) -> str:
     """
-    Replace ![[path]] / ![[path|caption]] tokens with a <figure> block.
+    Replace ![[filename]] / ![[filename|caption]] tokens with a <figure>
+    block, always resolved under assets/images/.
 
     Runs on the raw Markdown *before* it's converted to HTML. The output
     is a block-level HTML tag on its own line, which Python-Markdown
@@ -73,11 +81,19 @@ def _render_inline_images(body: str) -> str:
     """
 
     def _replace(match: re.Match[str]) -> str:
-        path = match.group(1).strip()
+        raw_path = match.group(1).strip()
         caption = match.group(2).strip() if match.group(2) else None
 
+        # Obsidian-style: just a bare filename, always resolved under
+        # assets/images/. Strip a leading 'images/' if someone writes it
+        # anyway, so it doesn't double up.
+        path = raw_path.lstrip("/")
+        if path.startswith(f"{_IMAGES_SUBDIR}/"):
+            path = path[len(_IMAGES_SUBDIR) + 1:]
+        full_path = f"{_IMAGES_SUBDIR}/{path}"
+
         alt_text = caption or Path(path).stem.replace("-", " ").replace("_", " ")
-        src = asset_url(path)
+        src = asset_url(full_path)
 
         parts = [
             '<figure class="gallery-item">',
