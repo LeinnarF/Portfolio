@@ -66,12 +66,13 @@ links:
 Regular Markdown from here down — headings, paragraphs, ```code fences```,
 tables, and images all work and get styled to match the design.
 
-Place an image exactly where it belongs in the write-up with `[[path]]`,
-where `path` is relative to `assets/` (same convention as `cover_image`):
+Place an image exactly where it belongs in the write-up with `![[path]]`
+(Obsidian-style embed syntax), where `path` is relative to `assets/`
+(same convention as `cover_image`):
 
-[[images/my-project/screen-1.png|Optional caption shown under the image]]
+![[images/my-project/screen-1.png|Optional caption shown under the image]]
 
-The caption after `|` is optional — `[[images/my-project/screen-1.png]]`
+The caption after `|` is optional — `![[images/my-project/screen-1.png]]`
 alone works too, falling back to the filename as alt text. Put it on its
 own line with a blank line before and after, same as any other block.
 ```
@@ -95,7 +96,7 @@ See `content/data/app-rating-prediction.md` and
 | `links`        | no       | list of `{label, url}` — buttons on the project page  |
 
 There is no `gallery` field — place images inline in the body with
-`[[path]]` / `[[path|caption]]` instead (see above). This puts each
+`![[path]]` / `![[path|caption]]` instead (see above). This puts each
 image next to the text it illustrates rather than pinned to a fixed
 spot on the page.
 

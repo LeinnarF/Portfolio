@@ -13,14 +13,15 @@ Expected file shape:
 
     Markdown content here...
 
-    [[images/data/eda-plot.png|Distribution of ratings before cleaning]]
+    ![[images/data/eda-plot.png|Distribution of ratings before cleaning]]
 
     More content after the image...
 
-Inline images use `[[path]]` or `[[path|caption]]`, where `path` is
-relative to assets/ (same convention as `cover_image`). This replaces a
-front-matter `gallery` list — images live exactly where they're relevant
-in the write-up instead of being pinned to a fixed spot on the page.
+Inline images use `![[path]]` or `![[path|caption]]` (Obsidian-style
+embed syntax), where `path` is relative to assets/ (same convention as
+`cover_image`). This replaces a front-matter `gallery` list — images
+live exactly where they're relevant in the write-up instead of being
+pinned to a fixed spot on the page.
 
 Keeping this parser dumb on purpose — it doesn't know about the Project
 model or validation rules. That lives in models.py / loader.py, so this
@@ -44,9 +45,9 @@ from .utils import asset_url
 # DOTALL so `.` matches newlines inside the yaml block and the body.
 _FRONT_MATTER_RE = re.compile(r"^[ \t]*---[ \t]*\n(.*?\n)---[ \t]*\n(.*)$", re.DOTALL)
 
-# Matches [[path]] or [[path|caption]]. Path can't contain '|' or ']';
-# caption (optional) runs up to the closing ']]'.
-_INLINE_IMAGE_RE = re.compile(r"\[\[\s*([^|\]]+?)\s*(?:\|\s*(.+?)\s*)?\]\]")
+# Matches ![[path]] or ![[path|caption]] — Obsidian-style embed syntax.
+# Path can't contain '|' or ']'; caption (optional) runs up to the closing ']]'.
+_INLINE_IMAGE_RE = re.compile(r"!\[\[\s*([^|\]]+?)\s*(?:\|\s*(.+?)\s*)?\]\]")
 
 _MARKDOWN_EXTENSIONS = [
     "fenced_code",  # ```python ... ``` blocks
@@ -62,7 +63,7 @@ class ParseError(Exception):
 
 def _render_inline_images(body: str) -> str:
     """
-    Replace [[path]] / [[path|caption]] tokens with a <figure> block.
+    Replace ![[path]] / ![[path|caption]] tokens with a <figure> block.
 
     Runs on the raw Markdown *before* it's converted to HTML. The output
     is a block-level HTML tag on its own line, which Python-Markdown
@@ -127,3 +128,4 @@ def parse_markdown_file(path: str | Path) -> tuple[dict[str, Any], str]:
     html_body = markdown.markdown(body, extensions=_MARKDOWN_EXTENSIONS)
 
     return metadata, html_body
+
