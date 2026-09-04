@@ -24,6 +24,7 @@ from pydantic import ValidationError
 
 from .models import Project
 from .parser import ParseError, parse_markdown_file
+from .utils import slugify
 
 
 def load_projects(content_dir: str | Path) -> list[Project]:
@@ -34,6 +35,13 @@ def load_projects(content_dir: str | Path) -> list[Project]:
         raise FileNotFoundError(f"Content directory not found: {content_dir}")
 
     for type_dir in sorted(p for p in content_dir.iterdir() if p.is_dir()):
+        # Skip dotfolders/underscore-prefixed folders (e.g. a Templates
+        # scaffold someone drops under content/ by habit) — these aren't
+        # real project categories and would otherwise fail validation
+        # noisily on every build.
+        if type_dir.name.startswith((".", "_")):
+            continue
+
         project_type = type_dir.name
 
         for md_file in sorted(type_dir.glob("*.md")):
@@ -43,7 +51,7 @@ def load_projects(content_dir: str | Path) -> list[Project]:
                 print(f"[loader] skipping {md_file}: {exc}")
                 continue
 
-            metadata.setdefault("slug", md_file.stem)
+            metadata.setdefault("slug", slugify(md_file.stem))
             metadata["type"] = project_type
             metadata["content"] = html
 
