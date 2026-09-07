@@ -45,9 +45,12 @@ def build(
     output_dir = Path(output_dir)
     assets_dir = Path(assets_dir)
 
-    if output_dir.exists():
-        shutil.rmtree(output_dir)
-    output_dir.mkdir(parents=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    for child in output_dir.iterdir():
+        if child.is_dir():
+            shutil.rmtree(child)
+        else:
+            child.unlink()
 
     if assets_dir.exists():
         shutil.copytree(assets_dir, output_dir / "assets")
