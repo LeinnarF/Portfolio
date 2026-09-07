@@ -1,5 +1,7 @@
 {
   "newFileLocation": "folder",
   "newFileFolderPath": "content",
-  "attachmentFolderPath": "assets/images"
+  "attachmentFolderPath": "assets/images",
+  "defaultViewMode": "preview",
+  "showLineNumber": true
 }
