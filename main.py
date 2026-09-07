@@ -1,6 +1,7 @@
 """
 Usage:
     python main.py build
+    python main.py serve [--port 8000] [--host 127.0.0.1] [--no-watch] [--open]
 
 Site-wide copy (hero text, about section, footer links) is defined here
 as plain dicts rather than Markdown files, since it isn't per-project
@@ -14,6 +15,7 @@ import argparse
 from pathlib import Path
 
 from src.builder import build
+from src.server import serve
 
 ROOT = Path(__file__).parent
 
@@ -86,8 +88,50 @@ ABOUT = {
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build the portfolio static site.")
-    parser.add_argument("command", choices=["build"], help="Command to run")
+    parser = argparse.ArgumentParser(
+        description="Static portfolio site generator and dev server."
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    # build
+    subparsers.add_parser("build", help="Build the static site to static/")
+
+    # serve
+    serve_parser = subparsers.add_parser(
+        "serve",
+        help="Serve the static site locally with live-reload",
+    )
+    serve_parser.add_argument(
+        "-p",
+        "--port",
+        type=int,
+        default=8000,
+        help="Port to serve on (default: 8000)",
+    )
+    serve_parser.add_argument(
+        "--host",
+        default="127.0.0.1",
+        help="Host address to bind to (default: 127.0.0.1)",
+    )
+    serve_parser.add_argument(
+        "--watch",
+        action="store_true",
+        default=True,
+        help="Enable live reloading (default: enabled)",
+    )
+    serve_parser.add_argument(
+        "--no-watch",
+        dest="watch",
+        action="store_false",
+        help="Disable live reloading and watch mode",
+    )
+    serve_parser.add_argument(
+        "--open",
+        action="store_true",
+        default=False,
+        help="Open the site in your default browser on start",
+    )
+
     args = parser.parse_args()
 
     if args.command == "build":
@@ -101,6 +145,24 @@ def main() -> None:
             work=WORK,
             intersection=INTERSECTION,
             about=ABOUT,
+        )
+    elif args.command == "serve":
+        serve(
+            content_dir=ROOT / "content",
+            templates_dir=ROOT / "templates",
+            assets_dir=ROOT / "assets",
+            output_dir=ROOT / "static",
+            src_dir=ROOT / "src",
+            main_file=ROOT / "main.py",
+            site=SITE,
+            home=HOME,
+            work=WORK,
+            intersection=INTERSECTION,
+            about=ABOUT,
+            port=args.port,
+            host=args.host,
+            watch=args.watch,
+            open_browser=args.open,
         )
 
 
