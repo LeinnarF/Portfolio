@@ -9,11 +9,50 @@ UI-UX portfolio, but the category system is generic — add a new
 
 ```bash
 pip install -r requirements.txt
-python main.py build
-python -m http.server -d static 8000
+python main.py serve
 ```
 
 Open `http://localhost:8000`.
+
+## How to use
+
+### Development server (Live-reload)
+
+Run the dev server with automatic rebuilding and browser live-reload:
+
+```bash
+python main.py serve
+```
+
+Any changes to Markdown files (`content/`), Jinja templates (`templates/`), static assets (`assets/`), build logic (`src/`), or site copy (`main.py`) will automatically trigger a rebuild and refresh connected browser tabs.
+
+**Options:**
+- `--port`, `-p`: Port to serve on (default: `8000`)
+  ```bash
+  python main.py serve -p 8080
+  ```
+- `--host`: Host address to bind to (default: `127.0.0.1`)
+  ```bash
+  python main.py serve --host 0.0.0.0
+  ```
+- `--open`: Open the site in your default browser automatically on start
+  ```bash
+  python main.py serve --open
+  ```
+- `--no-watch`: Serve the `static/` folder statically without file watching or live-reload
+  ```bash
+  python main.py serve --no-watch
+  ```
+
+### Building static output
+
+Generate the static HTML files directly into `static/` without running the server:
+
+```bash
+python main.py build
+```
+
+The output in `static/` is ready to be deployed to any static hosting service (GitHub Pages, Cloudflare Pages, Netlify, Vercel, etc.).
 
 ## How it works
 
@@ -34,9 +73,10 @@ content/<type>/*.md  →  parser.py  →  loader.py  →  builder.py  →  stati
 4. **`src/builder.py`** — renders `templates/index.html` and
    `templates/project.html` (one output per project) with Jinja2, copies
    `assets/` into `static/`.
-5. **`main.py`** — CLI entry point (`python main.py build`) and the
-   site-wide copy (hero text, about section, footer links) that isn't
-   per-project content.
+5. **`src/server.py`** — dev server with live-reload using `livereload`,
+   watching source folders and dynamically reloading site copy.
+6. **`main.py`** — CLI entry point (`build`, `serve`) and site-wide copy
+   (hero text, about section, footer links) that isn't per-project content.
 
 ## Writing a project
 
@@ -128,6 +168,7 @@ portfolio/
 │   ├── parser.py         Front matter + Markdown → HTML, inline [[image]] syntax
 │   ├── loader.py         Discovers and validates content/ into Projects
 │   ├── builder.py        Renders templates, writes static/
+│   ├── server.py         Dev server with live-reload
 │   └── utils.py          Shared asset_url() path helper
 ├── main.py               Site copy + CLI
 └── requirements.txt
@@ -135,7 +176,6 @@ portfolio/
 
 ## Known gaps / not yet built
 
-- No `serve --watch` dev command — rebuild manually after content changes.
 - No syntax-highlighting theme — `codehilite` classes are in the output
   HTML but need a Pygments CSS theme appended to `style.css`
   (`pygmentize -S <style> -f html -a .codehilite`).
@@ -152,4 +192,4 @@ portfolio/
 ## Requirements
 
 - Python 3.10+
-- `jinja2`, `markdown`, `pyyaml`, `pydantic` (see `requirements.txt`)
+- `jinja2`, `markdown`, `pyyaml`, `pydantic`, `livereload` (see `requirements.txt`)
