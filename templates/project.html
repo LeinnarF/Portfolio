@@ -51,15 +51,6 @@
             </div>
             {% endif %}
 
-            {% if project.cover_image %}
-            <div class="project-cover">
-                <img src="{{ asset_url(project.cover_image) }}"
-                     alt="{{ project.title }}"
-                     decoding="async"
-                     {% if project.cover_width and project.cover_height %}width="{{ project.cover_width }}" height="{{ project.cover_height }}"{% endif %}>
-            </div>
-            {% endif %}
-
         </div>
 
     </section>

@@ -101,10 +101,6 @@ def collect_content_and_images(
             metadata["type"] = project_type
         metadata["_body_raw"] = body_raw
         metadata["_source_file"] = md_file
-
-        if metadata.get("cover_image"):
-            referenced_images.add(str(metadata["cover_image"]))
-
         inline_refs = extract_inline_image_refs(body_raw)
         referenced_images.update(inline_refs)
 
@@ -165,19 +161,10 @@ def build_project_models(
         if not data.get("year") and data.get("date"):
             data["year"] = str(data["date"]).split("-")[0]
 
-        # Update cover_image if mapped
-        cover = data.get("cover_image")
-        if cover and image_map:
-            target_info = (
-                image_map.get(cover)
-                or image_map.get(f"images/{cover}")
-                or image_map.get(cover.lstrip("/"))
-            )
-            if target_info:
-                data["cover_image"] = target_info[0]
-                if target_info[1] and target_info[2]:
-                    data["cover_width"] = target_info[1]
-                    data["cover_height"] = target_info[2]
+        data.pop("cover_image", None)
+        data.pop("cover_width", None)
+        data.pop("cover_height", None)
+        data.pop("image_label", None)
 
         html_content = render_markdown_body(body_raw, image_map=image_map, base_url=base_url)
         data["content"] = html_content

@@ -13,7 +13,6 @@ technologies:
   - Smart Phone
 featured: true
 order: 2
-cover_image: images/cover/test2.png
 ---
 ## Overview
 

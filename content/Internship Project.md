@@ -15,7 +15,6 @@ order: 1
 links:
   - label: Figma
     url: https://www.figma.com/design/1gTxpORAa67VcKBpSLCD0m/ESO--Copy-?node-id=0-1&t=d7oNZmF288BKe1Aw-1
-cover_image: images/cover/test2.png
 ---
 
 ## Context
@@ -37,8 +36,7 @@ The redesign moved optional fields later in the flow and replaced a
 single long form with progressive steps tied to a visible sense of
 progress.
 
-![[images/test1.png|Caption]]
-
+![[Pasted image 20261019205550.png|Login Page]]
 ## Outcome
 
 Usability testing on the revised flow showed shorter completion times

@@ -52,12 +52,6 @@ class Project(BaseModel):
     featured: bool = False
     draft: bool = False
 
-    # media
-    cover_image: Optional[str] = None
-    cover_width: Optional[int] = None
-    cover_height: Optional[int] = None
-    image_label: Optional[str] = None  # fallback text shown on the card if no cover_image
-
     # links
     links: list[Link] = Field(default_factory=list)
 

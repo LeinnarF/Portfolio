@@ -4,7 +4,7 @@ Image optimization and asset synchronization pipeline.
 Features:
 - WebP conversion and max-width resizing via Pillow
 - Hash/mtime caching so unchanged images are not re-processed
-- Only referenced images (covers and inline markdown embeds) are built
+- Only referenced images (inline markdown embeds) are built
 - Incremental syncing for non-image assets (CSS, JS, fonts)
 - Cleanup of orphaned output files
 - Automated Pygments syntax highlighting stylesheet generation

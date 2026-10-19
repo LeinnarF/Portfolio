@@ -758,20 +758,6 @@ footer {
     background: var(--surface);
 }
 
-.project-cover {
-    margin-top: 50px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    background: var(--surface);
-}
-
-.project-cover img {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
 .project-body {
     width: 100%;
     max-width: 100%;

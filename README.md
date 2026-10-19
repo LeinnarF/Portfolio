@@ -120,7 +120,6 @@ tagline: "THESIS"
 featured: true
 order: 1
 draft: false
-cover_image: images/cover/lakad.png
 links:
   - label: GitHub
     url: https://github.com/LeinnarF/lakad
@@ -145,7 +144,7 @@ def calculate_metrics(data: list[float]) -> float:
 ### Embedding images
 Images placed in `assets/` can be embedded directly in the body using Obsidian-style syntax:
 
-![[images/cover/lakad.png|Interactive itinerary map view]]
+![[images/lakad.png|Interactive itinerary map view]]
 
 The caption after `|` is optional. Images are automatically converted to optimized WebP
 formats during build.
@@ -164,8 +163,6 @@ formats during build.
 | `featured` | boolean | No | Default `false`. If `true`, the project appears in the featured work list on the homepage. |
 | `order` | int | No | Default `0`. Tiebreaker sorting priority within featured or unfeatured groups (lower numbers appear first). |
 | `draft` | boolean | No | Default `false`. Set to `true` to keep work-in-progress drafts from appearing in the build output. |
-| `cover_image` | string | No | Relative path under `assets/` (e.g. `images/cover/lakad.png`). Used on the detail page and as the desktop cursor-following thumbnail preview. |
-| `image_label` | string | No | Fallback text if no `cover_image` is specified. |
 | `links` | list[object] | No | Call-to-action buttons on the project page. Each item requires `label` and `url`. |
 
 ### 4. Adding or modifying disciplines
