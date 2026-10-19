@@ -1,0 +1,271 @@
+/* ==========================================================================
+   Syntax Highlighting (Pygments Dual-Theme Support)
+   Adaptive theme variables for light and dark modes.
+   ========================================================================== */
+
+:root,
+[data-theme="light"] {
+    --syn-text: #24292f;
+    --syn-comment: #6e7781;
+    --syn-keyword: #cf222e;
+    --syn-string: #0a3069;
+    --syn-number: #0550ae;
+    --syn-func: #8250df;
+    --syn-class: #953800;
+    --syn-builtin: #0550ae;
+    --syn-operator: #cf222e;
+    --syn-punct: #57606a;
+    --syn-variable: #24292f;
+    --syn-tag: #116329;
+    --syn-attr: #0550ae;
+    --syn-constant: #0550ae;
+    --syn-regex: #116329;
+    --syn-diff-del: #82071e;
+    --syn-diff-del-bg: rgba(255, 235, 233, 0.7);
+    --syn-diff-ins: #116329;
+    --syn-diff-ins-bg: rgba(218, 251, 225, 0.7);
+    --syn-lineno: #8c959f;
+    --syn-hll: rgba(234, 238, 242, 0.7);
+}
+
+[data-theme="dark"] {
+    --syn-text: #e6edf3;
+    --syn-comment: #8b949e;
+    --syn-keyword: #ff7b72;
+    --syn-string: #a5d6ff;
+    --syn-number: #79c0ff;
+    --syn-func: #d2a8ff;
+    --syn-class: #ffa657;
+    --syn-builtin: #79c0ff;
+    --syn-operator: #ff7b72;
+    --syn-punct: #e6edf3;
+    --syn-variable: #e6edf3;
+    --syn-tag: #7ee787;
+    --syn-attr: #79c0ff;
+    --syn-constant: #79c0ff;
+    --syn-regex: #7ee787;
+    --syn-diff-del: #ffa198;
+    --syn-diff-del-bg: rgba(248, 81, 73, 0.15);
+    --syn-diff-ins: #56d364;
+    --syn-diff-ins-bg: rgba(46, 160, 67, 0.15);
+    --syn-lineno: #6e7681;
+    --syn-hll: rgba(110, 118, 129, 0.2);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --syn-text: #e6edf3;
+        --syn-comment: #8b949e;
+        --syn-keyword: #ff7b72;
+        --syn-string: #a5d6ff;
+        --syn-number: #79c0ff;
+        --syn-func: #d2a8ff;
+        --syn-class: #ffa657;
+        --syn-builtin: #79c0ff;
+        --syn-operator: #ff7b72;
+        --syn-punct: #e6edf3;
+        --syn-variable: #e6edf3;
+        --syn-tag: #7ee787;
+        --syn-attr: #79c0ff;
+        --syn-constant: #79c0ff;
+        --syn-regex: #7ee787;
+        --syn-diff-del: #ffa198;
+        --syn-diff-del-bg: rgba(248, 81, 73, 0.15);
+        --syn-diff-ins: #56d364;
+        --syn-diff-ins-bg: rgba(46, 160, 67, 0.15);
+        --syn-lineno: #6e7681;
+        --syn-hll: rgba(110, 118, 129, 0.2);
+    }
+}
+
+/* ==========================================================================
+   Codehilite Container & Rules
+   ========================================================================== */
+
+.codehilite {
+    background: transparent !important;
+    color: var(--syn-text);
+}
+
+.codehilite pre {
+    line-height: 1.6;
+    color: var(--syn-text);
+}
+
+/* Line numbers */
+td.linenos .normal,
+span.linenos {
+    color: var(--syn-lineno);
+    background-color: transparent;
+    padding-left: 5px;
+    padding-right: 5px;
+    user-select: none;
+}
+
+td.linenos .special,
+span.linenos.special {
+    color: var(--syn-text);
+    background-color: var(--border);
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+/* Highlighted lines */
+.codehilite .hll {
+    background-color: var(--syn-hll);
+    display: block;
+    margin: 0 -20px;
+    padding: 0 20px;
+}
+
+/* Comments */
+.codehilite .c,
+.codehilite .ch,
+.codehilite .cm,
+.codehilite .cp,
+.codehilite .cpf,
+.codehilite .c1,
+.codehilite .cs {
+    color: var(--syn-comment);
+    font-style: italic;
+}
+
+/* Errors & Escapes */
+.codehilite .err {
+    color: var(--syn-keyword);
+}
+.codehilite .esc,
+.codehilite .x {
+    color: var(--syn-text);
+}
+
+/* Generic */
+.codehilite .g { color: var(--syn-text); }
+.codehilite .gd { color: var(--syn-diff-del); background-color: var(--syn-diff-del-bg); }
+.codehilite .ge { color: var(--syn-text); font-style: italic; }
+.codehilite .ges { color: var(--syn-text); font-weight: bold; font-style: italic; }
+.codehilite .gr { color: var(--syn-keyword); }
+.codehilite .gh { color: var(--syn-number); font-weight: bold; }
+.codehilite .gi { color: var(--syn-diff-ins); background-color: var(--syn-diff-ins-bg); }
+.codehilite .go,
+.codehilite .gp { color: var(--syn-comment); }
+.codehilite .gs { color: var(--syn-text); font-weight: bold; }
+.codehilite .gu { color: var(--syn-number); }
+.codehilite .gt { color: var(--syn-keyword); }
+.codehilite .g-Underline { color: var(--syn-text); text-decoration: underline; }
+
+/* Keywords */
+.codehilite .k,
+.codehilite .kc,
+.codehilite .kd,
+.codehilite .kn,
+.codehilite .kp,
+.codehilite .kr,
+.codehilite .kt {
+    color: var(--syn-keyword);
+    font-weight: 600;
+}
+
+/* Operators */
+.codehilite .o,
+.codehilite .ow {
+    color: var(--syn-operator);
+}
+
+/* Punctuation */
+.codehilite .p,
+.codehilite .pm {
+    color: var(--syn-punct);
+}
+
+/* Literals (Numbers & Constants) */
+.codehilite .l,
+.codehilite .ld {
+    color: var(--syn-number);
+}
+.codehilite .m,
+.codehilite .mb,
+.codehilite .mf,
+.codehilite .mh,
+.codehilite .mi,
+.codehilite .mo,
+.codehilite .il {
+    color: var(--syn-number);
+}
+
+/* Strings */
+.codehilite .s,
+.codehilite .sa,
+.codehilite .sb,
+.codehilite .sc,
+.codehilite .dl,
+.codehilite .sd,
+.codehilite .s2,
+.codehilite .se,
+.codehilite .sh,
+.codehilite .si,
+.codehilite .sx,
+.codehilite .s1,
+.codehilite .ss {
+    color: var(--syn-string);
+}
+.codehilite .sr {
+    color: var(--syn-regex);
+}
+
+/* Names (Variables, Functions, Classes, Tags) */
+.codehilite .n,
+.codehilite .nx {
+    color: var(--syn-text);
+}
+.codehilite .na {
+    color: var(--syn-attr);
+}
+.codehilite .nb,
+.codehilite .bp {
+    color: var(--syn-builtin);
+}
+.codehilite .nc,
+.codehilite .ne {
+    color: var(--syn-class);
+    font-weight: 600;
+}
+.codehilite .no {
+    color: var(--syn-constant);
+    font-weight: 600;
+}
+.codehilite .nd {
+    color: var(--syn-func);
+    font-weight: 600;
+}
+.codehilite .ni {
+    color: var(--syn-class);
+}
+.codehilite .nf,
+.codehilite .fm {
+    color: var(--syn-func);
+    font-weight: 600;
+}
+.codehilite .nl {
+    color: var(--syn-constant);
+}
+.codehilite .nn {
+    color: var(--syn-text);
+}
+.codehilite .py,
+.codehilite .nv,
+.codehilite .vc,
+.codehilite .vg,
+.codehilite .vi,
+.codehilite .vm {
+    color: var(--syn-variable);
+}
+.codehilite .nt {
+    color: var(--syn-tag);
+    font-weight: 600;
+}
+
+/* Whitespace */
+.codehilite .w {
+    color: var(--syn-comment);
+}

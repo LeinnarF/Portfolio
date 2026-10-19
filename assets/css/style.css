@@ -831,21 +831,45 @@ footer {
     }
 }
 
+.codehilite {
+    background: transparent !important;
+    margin: 24px 0;
+    padding: 0;
+    border: none;
+}
+
 .project-body pre {
-    margin: 20px 0;
-    padding: 18px;
+    margin: 24px 0;
+    padding: 18px 20px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
     overflow-x: auto;
     font-size: 0.85rem;
+    line-height: 1.6;
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    color: var(--text);
+    -webkit-overflow-scrolling: touch;
+}
+
+.project-body .codehilite pre {
+    margin: 0;
 }
 
 .project-body code {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     font-size: 0.9em;
 }
+
+.project-body :not(pre) > code {
+    font-size: 0.85em;
+    padding: 0.15em 0.4em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+}
+
 
 .project-body table {
     margin: 20px 0;

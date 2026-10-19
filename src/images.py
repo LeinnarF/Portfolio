@@ -162,15 +162,18 @@ def sync_assets(
                 shutil.copy2(path, target_file)
             expected_output_files.add(target_file.resolve())
 
-    # 3. Generate Pygments syntax.css
+    # 3. Generate Pygments syntax.css fallback if not in source assets
     if generate_syntax_css:
+        source_syntax = assets_dir / "css" / "syntax.css"
         syntax_css_file = output_assets_dir / "css" / "syntax.css"
         syntax_css_file.parent.mkdir(parents=True, exist_ok=True)
-        if not syntax_css_file.exists():
+        if not source_syntax.exists() and not syntax_css_file.exists():
             formatter = HtmlFormatter(style="friendly")
             css_content = formatter.get_style_defs(".codehilite")
             syntax_css_file.write_text(css_content, encoding="utf-8")
-        expected_output_files.add(syntax_css_file.resolve())
+        if syntax_css_file.exists():
+            expected_output_files.add(syntax_css_file.resolve())
+
 
     # 4. Remove orphaned files in output_assets_dir
     for out_file in output_assets_dir.rglob("*"):
