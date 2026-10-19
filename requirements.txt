@@ -1,5 +1,7 @@
-jinja2
-markdown
-pyyaml
-pydantic
-livereload
+jinja2>=3.1.6
+markdown>=3.10.0
+pyyaml>=6.0.2
+pydantic>=2.10.0
+livereload>=2.7.0
+pillow>=11.0.0
+pygments>=2.19.0

@@ -24,7 +24,7 @@ Run the dev server with automatic rebuilding and browser live-reload:
 python main.py serve
 ```
 
-Any changes to Markdown files (`content/`), Jinja templates (`templates/`), static assets (`assets/`), build logic (`src/`), or site copy (`main.py`) will automatically trigger a rebuild and refresh connected browser tabs.
+Any changes to Markdown files and site copy (`content/`), Jinja templates (`templates/`), or static assets (`assets/`) will automatically trigger an incremental in-process rebuild and refresh connected browser tabs. Changes to `src/` will automatically restart the server process.
 
 **Options:**
 - `--port`, `-p`: Port to serve on (default: `8000`)
@@ -34,6 +34,10 @@ Any changes to Markdown files (`content/`), Jinja templates (`templates/`), stat
 - `--host`: Host address to bind to (default: `127.0.0.1`)
   ```bash
   python main.py serve --host 0.0.0.0
+  ```
+- `--base-url`: Base URL prefix for testing subpath routing
+  ```bash
+  python main.py serve --base-url /Portfolio
   ```
 - `--open`: Open the site in your default browser automatically on start
   ```bash
@@ -52,31 +56,38 @@ Generate the static HTML files directly into `static/` without running the serve
 python main.py build
 ```
 
-The output in `static/` is ready to be deployed to any static hosting service (GitHub Pages, Cloudflare Pages, Netlify, Vercel, etc.).
+**Options:**
+- `--base-url`: Prefix all internal and asset links with a base path (useful for GitHub Pages project sites like `https://username.github.io/repo-name`)
+  ```bash
+  python main.py build --base-url /Portfolio
+  ```
+- `--strict`: Fail with exit code 1 if any content front matter is invalid or malformed (recommended for CI pipelines)
+  ```bash
+  python main.py build --strict
+  ```
+
+The output in `static/` is ready to be deployed to any static hosting service (GitHub Pages, Cloudflare Pages, Netlify, Vercel, etc.). A GitHub Actions workflow is also provided at `.github/workflows/deploy.yml`.
 
 ## How it works
 
 ```
-content/<type>/*.md  →  parser.py  →  loader.py  →  builder.py  →  static/
-   (Markdown +           (front matter    (validates into        (renders
-    front matter)         + body → HTML)   Project objects,        templates,
-                                            groups by category)     copies assets)
+content/<type>/*.md  →  parser.py  →  loader.py  →  images.py  →  builder.py  →  static/
+   (Markdown +           (front matter    (validates into  (WebP optimize,   (renders templates,
+    front matter)         + body → HTML)   Project objects, unreferenced      outputs 404, sitemap)
+                                           groups category) assets pruned)
 ```
 
 1. **`content/`** — one Markdown file per project, one folder per category
-   (`data/`, `uiux/`, or any folder name you add).
+   (`data/`, `uiux/`, or any folder name you add), and `_site.yaml` for site-wide copy.
 2. **`src/parser.py`** — splits a file into YAML front matter + Markdown
-   body, renders the body to HTML.
-3. **`src/loader.py`** — walks `content/`, validates each file's front
+   body, parses inline `![[image]]` tags with dimensions and lazy loading, renders the body to HTML with code syntax highlighting tokens.
+3. **`src/loader.py`** — walks `content/`, loads `content/_site.yaml`, validates each file's front
    matter into a `Project` (via `src/models.py`), skips anything invalid
    or marked `draft: true`, sorts, and groups by category.
-4. **`src/builder.py`** — renders `templates/index.html` and
-   `templates/project.html` (one output per project) with Jinja2, copies
-   `assets/` into `static/`.
-5. **`src/server.py`** — dev server with live-reload using `livereload`,
-   watching source folders and dynamically reloading site copy.
-6. **`main.py`** — CLI entry point (`build`, `serve`) and site-wide copy
-   (hero text, about section, footer links) that isn't per-project content.
+4. **`src/images.py`** — optimizes referenced images to WebP, resizes large screenshots, caches output via mtime, syncs non-image assets incrementally, prunes unreferenced images, and auto-generates the Pygments code syntax highlighting CSS.
+5. **`src/builder.py`** — renders `templates/index.html`, `templates/project.html`, `templates/404.html`, and `sitemap.xml` with Jinja2.
+6. **`src/server.py`** — dev server with live-reload using `livereload`, watching source folders with incremental rebuilds and process restarting on `src/` changes.
+7. **`main.py`** — CLI entry point (`build`, `serve`).
 
 ## Writing a project
 
@@ -92,7 +103,7 @@ tagline: MACHINE LEARNING       # optional, overrides the category label
 technologies: [Python, Pandas, Scikit-learn]
 featured: true                  # featured projects sort first
 order: 1                        # tiebreaker within featured/non-featured
-draft: false                    # true = built but excluded from output
+draft: false                    # true = excluded from output
 cover_image: images/my-project/cover.png   # optional, path under assets/
 links:
   - label: GitHub
@@ -118,7 +129,7 @@ own line with a blank line before and after, same as any other block.
 ```
 
 See `content/data/app-rating-prediction.md` and
-`content/uiux/internship-project.md` for full working examples.
+`content/uiux/Internship Project.md` for full working examples.
 
 ### Front matter fields
 
@@ -135,61 +146,40 @@ See `content/data/app-rating-prediction.md` and
 | `image_label`  | no       | fallback text on the card if there's no `cover_image` |
 | `links`        | no       | list of `{label, url}` — buttons on the project page  |
 
-There is no `gallery` field — place images inline in the body with
-`![[path]]` / `![[path|caption]]` instead (see above). This puts each
-image next to the text it illustrates rather than pinned to a fixed
-spot on the page.
-
-Malformed front matter (wrong type, missing required field) is skipped
-with a printed warning at build time rather than crashing the whole build
-— check the console output after `python main.py build`.
+Malformed front matter (wrong type, missing required field) is reported with a printed warning at build time (or fails the build if `--strict` is enabled).
 
 ## Editing site-wide copy
 
-Hero headline, about section, and footer links aren't per-project
-content, so they live as plain dicts at the top of `main.py`
-(`SITE`, `HOME`, `WORK`, `INTERSECTION`, `ABOUT`) — edit them directly.
+Hero headline, about section, resume link, base URL, and footer links live in `content/_site.yaml` — edit them directly without touching Python code.
 
 ## Project structure
 
 ```
 portfolio/
+├── .github/workflows/  GitHub Actions CI/CD deployment
+│   └── deploy.yml
 ├── content/            Source content — Markdown + front matter
+│   ├── _site.yaml      Global site copy and configuration
 │   ├── data/
 │   └── uiux/
-├── templates/           Jinja2 templates (base, index, project)
-├── assets/               Source assets — copied into static/assets/ on build
-│   ├── css/
-│   ├── images/
-│   └── js/
-├── static/               Generated output — do not edit directly, do not commit
-├── src/                  Build logic
-│   ├── models.py         Pydantic Project/Link
-│   ├── parser.py         Front matter + Markdown → HTML, inline [[image]] syntax
-│   ├── loader.py         Discovers and validates content/ into Projects
-│   ├── builder.py        Renders templates, writes static/
-│   ├── server.py         Dev server with live-reload
-│   └── utils.py          Shared asset_url() path helper
-├── main.py               Site copy + CLI
+├── templates/          Jinja2 templates (base, index, project, 404)
+├── assets/             Source assets (css, images, etc.)
+│   ├── css/style.css
+│   └── images/
+├── static/             Generated output (WebP images, HTML, sitemap.xml)
+├── src/                Build logic
+│   ├── models.py       Pydantic Project/Link definitions
+│   ├── parser.py       Front matter + Markdown → HTML, inline [[image]] syntax
+│   ├── loader.py       Discovers content & loads _site.yaml into Projects
+│   ├── images.py       WebP optimization, asset sync, syntax.css generation
+│   ├── builder.py      Incremental site renderer, sitemap, 404
+│   ├── server.py       Dev server with live-reload
+│   └── utils.py        asset_url() and url_for() path helpers
+├── main.py             CLI entry point
 └── requirements.txt
 ```
-
-## Known gaps / not yet built
-
-- No syntax-highlighting theme — `codehilite` classes are in the output
-  HTML but need a Pygments CSS theme appended to `style.css`
-  (`pygmentize -S <style> -f html -a .codehilite`).
-- No Jupyter notebook loader yet — Markdown only for now.
-- No deployment config (GitHub Actions / Netlify / Vercel) — `static/` is
-  built locally and would need to be uploaded or wired to CI.
-- `assets/js/` and `assets/images/` exist but are currently empty.
-- The `.gallery` grid CSS class (side-by-side image layout) is still in
-  `style.css` but unused by any template now — it's a manual escape hatch
-  if you ever want two images side by side: wrap raw HTML directly in a
-  Markdown file, e.g. `<div class="gallery">...`. Not documented as a
-  first-class feature since it breaks the plain-Markdown authoring flow.
 
 ## Requirements
 
 - Python 3.10+
-- `jinja2`, `markdown`, `pyyaml`, `pydantic`, `livereload` (see `requirements.txt`)
+- `jinja2`, `markdown`, `pyyaml`, `pydantic`, `livereload`, `pillow`, `pygments` (see `requirements.txt`)

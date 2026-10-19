@@ -1,90 +1,24 @@
 """
+Portfolio Static Site Generator & Dev Server CLI.
+
 Usage:
-    python main.py build
+    python main.py build [--base-url /subpath] [--strict]
     python main.py serve [--port 8000] [--host 127.0.0.1] [--no-watch] [--open]
 
-Site-wide copy (hero text, about section, footer links) is defined here
-as plain dicts rather than Markdown files, since it isn't per-project
-content that a loader needs to discover — it's the fixed shell around it.
-Edit the dicts below to change the homepage copy.
+Site configuration and copy (hero text, about section, footer links) are
+defined in `content/_site.yaml`.
 """
 
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
 
 from src.builder import build
 from src.server import serve
 
 ROOT = Path(__file__).parent
-
-SITE = {
-    "name": "Franniel Hilario",
-    "logo": "FRANNIEL.",
-    "tagline": "Data & UX",
-    "description": (
-        "Mathematics graduate specializing in Computer Science, working "
-        "across data analysis, machine learning, and UI/UX design."
-    ),
-    "resume_url": "/resume.pdf",
-    "footer_links": [
-        {"label": "GitHub", "url": "https://github.com/LeinnarF"},
-        {"label": "LinkedIn", "url": "https://linkedin.com/in/leinnarf"},
-        {"label": "Email", "url": "mailto:hilariofranniel@gmail.com"},
-    ],
-}
-
-HOME = {
-    "eyebrow": "MATHEMATICS • DATA • UX",
-    "headline": "Turning data into useful experiences.",
-    "description": (
-        "Mathematics graduate specializing in Computer Science, with "
-        "experience in data analysis, machine learning, and UI/UX design."
-    ),
-    "actions": [
-        {"label": "View Data Work", "url": "#data", "style": "primary"},
-        {"label": "View UI/UX Work", "url": "#uiux", "style": "secondary"},
-    ],
-    "visual_top": "DATA → UX",
-    "visual_bottom": "insight → experience",
-}
-
-WORK = {
-    "eyebrow": "SELECTED WORK",
-    "title": "Things I've built.",
-    "description": "A combination of analytical projects and user-centered design work.",
-}
-
-INTERSECTION = {
-    "eyebrow": "THE INTERSECTION",
-    "lines": [
-        {"text": "Data gives us", "highlight": "insight."},
-        {"text": "Design turns it into", "highlight": "action."},
-    ],
-    "description": (
-        "I'm interested in the space between quantitative analysis and "
-        "human-centered design — using data to understand problems and "
-        "design to make those insights useful."
-    ),
-}
-
-ABOUT = {
-    "eyebrow": "ABOUT",
-    "title": "A little about me.",
-    "paragraphs": [
-        "I'm a Mathematics graduate specializing in Computer Science, "
-        "interested in data, technology, and human-centered design.",
-        "My work spans data analysis, machine learning, visualization, "
-        "UI/UX design, and software development.",
-    ],
-    "skills": [
-        {"name": "Data", "skills_list": ["Python", "SQL", "Pandas", "NumPy", "Scikit-learn", "Visualization"]},
-        {"name": "UX / UI", "skills_list": ["User Research", "Wireframing", "UI Design", "Prototyping"]},
-        {"name": "Development", "skills_list": ["HTML", "CSS", "C/C++", "Python", "Git", "Linux"]},
-        {"name": "Tools", "skills_list": ["Figma", "Jupyter", "VS Code", "GitHub", "Streamlit", "Power BI"]},
-    ],
-}
 
 
 def main() -> None:
@@ -94,7 +28,18 @@ def main() -> None:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     # build
-    subparsers.add_parser("build", help="Build the static site to static/")
+    build_parser = subparsers.add_parser("build", help="Build the static site to static/")
+    build_parser.add_argument(
+        "--base-url",
+        default=None,
+        help="Base URL prefix for deployment (e.g. '/Portfolio' or 'https://user.github.io/Portfolio')",
+    )
+    build_parser.add_argument(
+        "--strict",
+        action="store_true",
+        default=False,
+        help="Exit with non-zero status on validation or parsing warnings",
+    )
 
     # serve
     serve_parser = subparsers.add_parser(
@@ -114,15 +59,15 @@ def main() -> None:
         help="Host address to bind to (default: 127.0.0.1)",
     )
     serve_parser.add_argument(
-        "--watch",
-        action="store_true",
-        default=True,
-        help="Enable live reloading (default: enabled)",
+        "--base-url",
+        default=None,
+        help="Base URL prefix for serving",
     )
     serve_parser.add_argument(
         "--no-watch",
         dest="watch",
         action="store_false",
+        default=True,
         help="Disable live reloading and watch mode",
     )
     serve_parser.add_argument(
@@ -134,31 +79,34 @@ def main() -> None:
 
     args = parser.parse_args()
 
+    content_dir = ROOT / "content"
+    templates_dir = ROOT / "templates"
+    assets_dir = ROOT / "assets"
+    output_dir = ROOT / "static"
+    src_dir = ROOT / "src"
+
     if args.command == "build":
-        build(
-            content_dir=ROOT / "content",
-            templates_dir=ROOT / "templates",
-            assets_dir=ROOT / "assets",
-            output_dir=ROOT / "static",
-            site=SITE,
-            home=HOME,
-            work=WORK,
-            intersection=INTERSECTION,
-            about=ABOUT,
-        )
+        try:
+            build(
+                content_dir=content_dir,
+                templates_dir=templates_dir,
+                assets_dir=assets_dir,
+                output_dir=output_dir,
+                base_url=args.base_url,
+                strict=args.strict,
+            )
+        except Exception as exc:
+            if args.strict:
+                sys.exit(f"Build failed in strict mode: {exc}")
+            raise
     elif args.command == "serve":
         serve(
-            content_dir=ROOT / "content",
-            templates_dir=ROOT / "templates",
-            assets_dir=ROOT / "assets",
-            output_dir=ROOT / "static",
-            src_dir=ROOT / "src",
-            main_file=ROOT / "main.py",
-            site=SITE,
-            home=HOME,
-            work=WORK,
-            intersection=INTERSECTION,
-            about=ABOUT,
+            content_dir=content_dir,
+            templates_dir=templates_dir,
+            assets_dir=assets_dir,
+            output_dir=output_dir,
+            src_dir=src_dir,
+            base_url=args.base_url,
             port=args.port,
             host=args.host,
             watch=args.watch,

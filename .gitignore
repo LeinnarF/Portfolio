@@ -1,2 +1,24 @@
+# Output
 static/
+
+# Drafts & scratch
 draft/
+plan.md
+doc/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# Obsidian
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+
+# IDE / OS
+.DS_Store
+*.swp
+*~

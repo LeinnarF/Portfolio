@@ -93,7 +93,7 @@
 
                         <div class="project-image">
                             {% if project.cover_image %}
-                            <img src="{{ asset_url(project.cover_image) }}" alt="{{ project.title }}">
+                            <img src="{{ asset_url(project.cover_image) }}" alt="{{ project.title }}" loading="lazy" decoding="async">
                             {% else %}
                             {{ project.image_label | default(project.title) }}
                             {% endif %}

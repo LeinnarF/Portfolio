@@ -2,32 +2,68 @@
 Renders templates/*.html with the loaded content and writes static/.
 
 Registers two Jinja globals the templates rely on:
-  - url_for('index' | 'project', project=...)  -> site-relative URL
-  - asset_url(path)                              -> site-relative asset URL
-
-Both are deliberately simple path builders, not a real routing system —
-this is a static site, there's no server deciding URLs at request time.
+  - url_for('index' | 'project', project=...)  -> site-relative URL with base_url
+  - asset_url(path)                              -> site-relative asset URL with base_url
 """
 
 from __future__ import annotations
 
-import shutil
+import datetime
 from pathlib import Path
 from typing import Any
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from .loader import group_by_category, load_projects
+from .images import sync_assets
+from .loader import (
+    build_project_models,
+    collect_content_and_images,
+    group_by_category,
+    load_site_config,
+)
 from .models import Project
 from .utils import asset_url as _asset_url
+from .utils import url_for as _url_for
 
 
-def _url_for(name: str, project: Project | None = None) -> str:
-    if name == "project":
-        if project is None:
-            raise ValueError("url_for('project', ...) requires a project argument")
-        return f"/{project.slug}/"
-    return "/"
+def _write_if_changed(path: Path, content: str) -> bool:
+    """Write text file only if content has changed or file doesn't exist."""
+    if path.exists():
+        try:
+            if path.read_text(encoding="utf-8") == content:
+                return False
+        except OSError:
+            pass
+    path.write_text(content, encoding="utf-8")
+    return True
+
+
+def _generate_sitemap_xml(
+    projects: list[Project],
+    site: dict[str, Any],
+    base_url: str = "",
+) -> str:
+    """Generate XML sitemap for search engines."""
+    domain = site.get("url", "").rstrip("/")
+    today = datetime.date.today().isoformat()
+    clean_base = base_url.rstrip("/") if base_url else ""
+
+    urls = [f"{domain}{clean_base}/"]
+    for p in projects:
+        urls.append(f"{domain}{clean_base}/{p.slug}/")
+
+    xml_lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ]
+    for url in urls:
+        xml_lines.append("  <url>")
+        xml_lines.append(f"    <loc>{url}</loc>")
+        xml_lines.append(f"    <lastmod>{today}</lastmod>")
+        xml_lines.append("    <changefreq>monthly</changefreq>")
+        xml_lines.append("  </url>")
+    xml_lines.append("</urlset>")
+    return "\n".join(xml_lines)
 
 
 def build(
@@ -36,53 +72,121 @@ def build(
     templates_dir: str | Path,
     assets_dir: str | Path,
     output_dir: str | Path,
-    site: dict[str, Any],
-    home: dict[str, Any],
-    work: dict[str, Any],
-    intersection: dict[str, Any],
-    about: dict[str, Any],
+    site_data: dict[str, Any] | None = None,
+    base_url: str | None = None,
+    strict: bool = False,
+    # Backward compatibility kwargs
+    site: dict[str, Any] | None = None,
+    home: dict[str, Any] | None = None,
+    work: dict[str, Any] | None = None,
+    intersection: dict[str, Any] | None = None,
+    about: dict[str, Any] | None = None,
 ) -> list[Project]:
-    output_dir = Path(output_dir)
+    content_dir = Path(content_dir)
+    templates_dir = Path(templates_dir)
     assets_dir = Path(assets_dir)
+    output_dir = Path(output_dir)
+
+    # 1. Load site configuration and global copy
+    if site_data is None:
+        site_data = load_site_config(content_dir)
+
+    # Merge backward-compatibility overrides if passed
+    current_site = dict(site_data.get("site", {}))
+    if site is not None:
+        current_site.update(site)
+
+    current_home = dict(site_data.get("home", {}))
+    if home is not None:
+        current_home.update(home)
+
+    current_work = dict(site_data.get("work", {}))
+    if work is not None:
+        current_work.update(work)
+
+    current_intersection = dict(site_data.get("intersection", {}))
+    if intersection is not None:
+        current_intersection.update(intersection)
+
+    current_about = dict(site_data.get("about", {}))
+    if about is not None:
+        current_about.update(about)
+
+    if base_url is None:
+        base_url = site_data.get("base_url", "")
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    for child in output_dir.iterdir():
-        if child.is_dir():
-            shutil.rmtree(child)
-        else:
-            child.unlink()
 
-    if assets_dir.exists():
-        shutil.copytree(assets_dir, output_dir / "assets")
+    # 2. Collect content files and extract referenced images
+    raw_projects, referenced_images = collect_content_and_images(content_dir, strict=strict)
 
+    # 3. Incrementally optimize and sync assets (only referenced images + non-images)
+    image_map = sync_assets(
+        assets_dir=assets_dir,
+        output_assets_dir=output_dir / "assets",
+        referenced_images=referenced_images,
+        generate_syntax_css=True,
+    )
+
+    # 4. Normalize projects and group by category
+    projects = build_project_models(
+        raw_projects,
+        image_map=image_map,
+        base_url=base_url,
+        strict=strict,
+    )
+    categories = group_by_category(projects)
+
+    # 5. Setup Jinja template environment
     env = Environment(
         loader=FileSystemLoader(str(templates_dir)),
         autoescape=select_autoescape(["html"]),
         trim_blocks=True,
         lstrip_blocks=True,
     )
-    env.globals["url_for"] = _url_for
-    env.globals["asset_url"] = _asset_url
+    env.globals["url_for"] = lambda name, project=None: _url_for(name, project=project, base_url=base_url)
+    env.globals["asset_url"] = lambda path: _asset_url(path, base_url=base_url)
+    env.globals["base_url"] = base_url
 
-    projects = load_projects(content_dir)
-    categories = group_by_category(projects)
-
+    # 6. Render index.html
     index_html = env.get_template("index.html").render(
-        site=site,
-        home=home,
-        work=work,
+        site=current_site,
+        home=current_home,
+        work=current_work,
         categories=categories,
-        intersection=intersection,
-        about=about,
+        intersection=current_intersection,
+        about=current_about,
     )
-    (output_dir / "index.html").write_text(index_html, encoding="utf-8")
+    _write_if_changed(output_dir / "index.html", index_html)
 
+    # 7. Render project detail pages
     project_template = env.get_template("project.html")
+    expected_slugs: set[str] = set()
+
     for project in projects:
+        expected_slugs.add(project.slug)
         project_dir = output_dir / project.slug
         project_dir.mkdir(parents=True, exist_ok=True)
-        html = project_template.render(site=site, project=project)
-        (project_dir / "index.html").write_text(html, encoding="utf-8")
+        html = project_template.render(site=current_site, project=project)
+        _write_if_changed(project_dir / "index.html", html)
 
-    print(f"Built {len(projects)} project(s) across {len(categories)} categor{'y' if len(categories) == 1 else 'ies'} -> {output_dir}")
+    # Clean up orphaned project directories
+    for child in output_dir.iterdir():
+        if child.is_dir() and child.name != "assets" and child.name not in expected_slugs:
+            import shutil
+            shutil.rmtree(child, ignore_errors=True)
+
+    # 8. Render 404.html if template exists
+    if (templates_dir / "404.html").exists():
+        html_404 = env.get_template("404.html").render(site=current_site)
+        _write_if_changed(output_dir / "404.html", html_404)
+
+    # 9. Generate sitemap.xml
+    sitemap_xml = _generate_sitemap_xml(projects, current_site, base_url=base_url)
+    _write_if_changed(output_dir / "sitemap.xml", sitemap_xml)
+
+    print(
+        f"Built {len(projects)} project(s) across {len(categories)} "
+        f"categor{'y' if len(categories) == 1 else 'ies'} -> {output_dir}"
+    )
     return projects
