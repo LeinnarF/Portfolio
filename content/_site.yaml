@@ -19,7 +19,15 @@ site:
 
 home:
   eyebrow: "MATHEMATICS • DATA • UX"
-  headline: "Turning data into useful experiences."
+  greeting: "Hi, I'm Franniel"
+  role_prefix: "I'm a"
+  roles:
+    - "Data Analyst"
+    - "Data Scientist"
+    - "Mathematician"
+    - "Programmer"
+    - "Game Developer"
+  headline: "Hi, I'm Franniel"
   description: >
     Mathematics graduate specializing in Computer Science, with
     experience in data analysis, machine learning, and UI/UX design.

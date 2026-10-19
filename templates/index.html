@@ -6,48 +6,15 @@
 
     <section class="hero">
 
-        <div class="container", style='display: contents;'>
+        <div class="container">
 
-            <div>
-                <div class="eyebrow">
-                    {{ home.eyebrow }}
-                </div>
-
-                <h1>
-                    {{ home.headline }}
-                </h1>
-
-                <p class="hero-description">
-                    {{ home.description }}
-                </p>
-
-                <div class="hero-actions">
-                    {% for action in home.actions %}
-                    <a href="{{ action.url }}" class="button {{ action.style }}">
-                        {{ action.label }}
-                    </a>
-                    {% endfor %}
-                </div>
-            </div>
-
-
-            <div class="hero-visual">
-
-                <div class="orbit"></div>
-
-                <div class="hero-center">
-
-                    <strong>
-                        {{ home.visual_top }}
-                    </strong>
-
-                    <span>
-                        {{ home.visual_bottom }}
-                    </span>
-
-                </div>
-
-            </div>
+            <h1 class="hero-title">
+                <span class="hero-greeting">{{ home.greeting | default("Hi, I'm Franniel") }}</span>
+                <span class="hero-role-line">
+                    <span id="role-prefix" class="hero-role-prefix">{{ home.role_prefix | default("I'm a") }}</span>
+                    <span id="role-flicker" class="role-flicker" data-roles='{{ (home.roles | default(["Data Analyst", "Data Scientist", "Mathematician", "Programmer", "Game Developer"])) | tojson }}'>{{ (home.roles | default(["Data Analyst"]))[0] }}</span>
+                </span>
+            </h1>
 
         </div>
 
