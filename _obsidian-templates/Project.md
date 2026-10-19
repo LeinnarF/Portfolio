@@ -2,7 +2,9 @@
 title: "{{title}}"
 summary:
 tagline:
-technologies:
+disciplines: []
+year:
+technologies: []
 featured: false
 order:
 links:

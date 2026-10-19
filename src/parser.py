@@ -1,5 +1,5 @@
 """
-Parses a single content/<type>/<slug>.md file into (metadata dict, html body).
+Parses a single content/<slug>.md file into (metadata dict, html body).
 
 Expected file shape:
 

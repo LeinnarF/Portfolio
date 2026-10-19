@@ -3,112 +3,92 @@
 {% block content %}
 
     <!-- HERO -->
-
     <section class="hero">
-
         <div class="container">
-
             <h1 class="hero-title">
                 <span class="hero-greeting">{{ home.greeting | default("Hi, I'm Franniel") }}</span>
                 <span class="hero-role-line">
                     <span id="role-prefix" class="hero-role-prefix">{{ home.role_prefix | default("I'm a") }}</span>
-                    <span id="role-flicker" class="role-flicker" data-roles='{{ (home.roles | default(["Data Analyst", "Data Scientist", "Mathematician", "Programmer", "Game Developer"])) | tojson }}'>{{ (home.roles | default(["Data Analyst"]))[0] }}</span>
+                    <span id="role-flicker" class="role-flicker" data-roles='{{ (home.roles | default(["Data Scientist", "UI/UX Designer", "Mobile Developer", "Researcher", "Mathematician"])) | tojson }}'>{{ (home.roles | default(["Data Scientist"]))[0] }}</span>
                 </span>
             </h1>
 
+            <div class="hero-meta">
+                <span>Based in {{ home.location | default("Bulacan, PH") }}</span>
+                <span class="meta-sep" aria-hidden="true">·</span>
+                <span class="hero-status"><span class="status-dot" aria-hidden="true"></span>{{ home.status | default("Open to work") }}</span>
+                <span class="meta-sep" aria-hidden="true">·</span>
+                <span id="local-time" class="hero-time" data-timezone="{{ home.timezone | default('Asia/Manila') }}">--:-- local time</span>
+            </div>
         </div>
-
     </section>
 
 
-    <!-- FEATURED WORK -->
-
-    <section id="work">
-
+    <!-- FEATURED WORK / INDEX LIST -->
+    <section id="work" class="reveal-on-scroll">
         <div class="container">
+            <div class="section-rule">
+                <span>01 — Work</span>
+                <span class="section-rule-count">{{ projects|length }} projects</span>
+            </div>
 
             <div class="section-header">
-
                 <div>
                     <div class="eyebrow">
                         {{ work.eyebrow }}
                     </div>
-
                     <h2 class="section-title">
                         {{ work.title }}
                     </h2>
                 </div>
-
                 <p class="section-description">
                     {{ work.description }}
                 </p>
-
             </div>
 
-
-            {% for category in categories %}
-            <div id="{{ category.id }}" class="category-block">
-
-                <div class="eyebrow">
-                    {{ "%02d"|format(loop.index) }} / {{ category.label }}
-                </div>
-
-                <div class="projects">
-
-                    {% for project in category.projects %}
-                    <a href="{{ url_for('project', project=project) }}" class="project">
-
-                        <div class="project-image">
-                            {% if project.cover_image %}
-                            <img src="{{ asset_url(project.cover_image) }}" alt="{{ project.title }}" loading="lazy" decoding="async">
-                            {% else %}
-                            {{ project.image_label | default(project.title) }}
-                            {% endif %}
-                        </div>
-
-                        <div class="project-content">
-
-                            <div class="project-category">
-                                {{ project.tagline | default(category.label) }}
-                            </div>
-
-                            <h3 class="project-title">
-                                {{ project.title }}
-                            </h3>
-
-                            <p class="project-description">
-                                {{ project.summary }}
-                            </p>
-
-                            <div class="tags">
-                                {% for tag in project.technologies %}
-                                <span class="tag">{{ tag }}</span>
-                                {% endfor %}
-                            </div>
-
-                        </div>
-
-                    </a>
-                    {% endfor %}
-
-                </div>
-
+            <!-- Minimalist Discipline Filters -->
+            {% if active_disciplines %}
+            <div class="project-filters" id="project-filters" role="tablist" aria-label="Filter projects by discipline">
+                <button type="button" class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All</button>
+                {% for disc in active_disciplines %}
+                <span class="filter-sep" aria-hidden="true">·</span>
+                <button type="button" class="filter-btn" data-filter="{{ disc.id }}" role="tab" aria-selected="false">{{ disc.label }}</button>
+                {% endfor %}
             </div>
-            {% endfor %}
+            {% endif %}
 
+            <!-- Typographic Project Index List -->
+            <div class="project-list" id="project-list">
+                {% for project in projects %}
+                <a href="{{ url_for('project', project=project) }}"
+                   class="project-row"
+                   data-disciplines="{{ project.disciplines | join(' ') }}">
+                    <span class="row-num">{{ "%02d"|format(loop.index) }}</span>
+                    <span class="row-title">
+                        <span class="title-text">{{ project.title }}</span>
+                        <span class="row-summary-mobile">{{ project.summary }}</span>
+                    </span>
+                    <span class="row-disciplines">
+                        {{ project.discipline_labels | join(' · ') }}
+                    </span>
+                    <span class="row-year">{{ project.year | default("—") }}</span>
+                    <span class="row-arrow" aria-hidden="true">→</span>
+                </a>
+                {% endfor %}
+            </div>
         </div>
-
     </section>
 
 
-    <!-- INTERSECTION -->
-
-    <section class="intersection">
-
+    <!-- INTERSECTION / METHOD -->
+    <section class="intersection reveal-on-scroll">
         <div class="container">
+            <div class="section-rule">
+                <span>02 — Method</span>
+                <span>The Intersection</span>
+            </div>
 
             <div class="intersection-content">
-
                 <div class="eyebrow">
                     {{ intersection.eyebrow }}
                 </div>
@@ -124,22 +104,20 @@
                 <p>
                     {{ intersection.description }}
                 </p>
-
             </div>
-
         </div>
-
     </section>
 
 
     <!-- ABOUT -->
-
-    <section id="about">
-
+    <section id="about" class="reveal-on-scroll">
         <div class="container">
+            <div class="section-rule">
+                <span>03 — About</span>
+                <span>Background & Skills</span>
+            </div>
 
             <div class="about">
-
                 <div>
                     <div class="eyebrow">
                         {{ about.eyebrow }}
@@ -150,35 +128,24 @@
                     </h2>
                 </div>
 
-
                 <div class="about-text">
-
                     {% for paragraph in about.paragraphs %}
                     <p>{{ paragraph }}</p>
                     {% endfor %}
 
                     <div class="skills">
-
                         {% for group in about.skills %}
                         <div class="skill-group">
-
                             <h3>{{ group.name }}</h3>
-
                             <p>
                                 {{ group.skills_list | join(' · ') }}
                             </p>
-
                         </div>
                         {% endfor %}
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </section>
 
 {% endblock %}

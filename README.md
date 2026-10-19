@@ -3,7 +3,7 @@
 A static portfolio site generator: write projects as Markdown files with
 YAML front matter, get a static HTML site out. Built for a Data Science /
 UI-UX portfolio, but the category system is generic — add a new
-`content/<type>/` folder and it shows up on the homepage automatically.
+Markdown file directly to `content/` and it shows up on the homepage automatically.
 
 ## Quick start
 
@@ -71,82 +71,122 @@ The output in `static/` is ready to be deployed to any static hosting service (G
 ## How it works
 
 ```
-content/<type>/*.md  →  parser.py  →  loader.py  →  images.py  →  builder.py  →  static/
+content/*.md        →  parser.py  →  loader.py  →  images.py  →  builder.py  →  static/
    (Markdown +           (front matter    (validates into  (WebP optimize,   (renders templates,
     front matter)         + body → HTML)   Project objects, unreferenced      outputs 404, sitemap)
-                                           groups category) assets pruned)
+                                           multidiscipline) assets pruned)
 ```
 
-1. **`content/`** — one Markdown file per project, one folder per category
-   (`data/`, `uiux/`, or any folder name you add), and `_site.yaml` for site-wide copy.
+1. **`content/`** — one Markdown file per project directly in `content/` (single flat folder, no subsections needed), and `_site.yaml` for site-wide copy.
 2. **`src/parser.py`** — splits a file into YAML front matter + Markdown
    body, parses inline `![[image]]` tags with dimensions and lazy loading, renders the body to HTML with code syntax highlighting tokens.
 3. **`src/loader.py`** — walks `content/`, loads `content/_site.yaml`, validates each file's front
    matter into a `Project` (via `src/models.py`), skips anything invalid
-   or marked `draft: true`, sorts, and groups by category.
+   or marked `draft: true`, sorts, and groups by discipline.
 4. **`src/images.py`** — optimizes referenced images to WebP, resizes large screenshots, caches output via mtime, syncs non-image assets incrementally, prunes unreferenced images, and auto-generates the Pygments code syntax highlighting CSS.
 5. **`src/builder.py`** — renders `templates/index.html`, `templates/project.html`, `templates/404.html`, and `sitemap.xml` with Jinja2.
 6. **`src/server.py`** — dev server with live-reload using `livereload`, watching source folders with incremental rebuilds and process restarting on `src/` changes.
 7. **`main.py`** — CLI entry point (`build`, `serve`).
 
-## Writing a project
+## Adding and Writing a Project
 
-Add a Markdown file under `content/<type>/`. The filename (minus `.md`)
-becomes the URL slug, e.g. `content/data/my-project.md` builds to
-`static/my-project/index.html`.
+### 1. Create a Markdown file
+
+Add a new Markdown file directly inside `content/` (such as `content/my-project.md`). The filename (without `.md`) becomes the project's URL slug:
+
+- `content/my-project.md` → builds to `static/my-project/index.html` (accessible at `/my-project/`)
+
+> [!TIP]
+> If you use Obsidian, an authoring template with all metadata fields preconfigured is available at `_obsidian-templates/Project.md`.
+
+### 2. Front matter structure
+
+Every project file begins with YAML front matter enclosed between triple-dashed lines `---`:
 
 ```markdown
 ---
-title: Project Title
-summary: One or two sentences — shown on the homepage card.
-tagline: MACHINE LEARNING       # optional, overrides the category label
-technologies: [Python, Pandas, Scikit-learn]
-featured: true                  # featured projects sort first
-order: 1                        # tiebreaker within featured/non-featured
-draft: false                    # true = excluded from output
-cover_image: images/my-project/cover.png   # optional, path under assets/
+title: "Lakad Mobile Application"
+summary: "A personalized mobile itinerary generator for cultural heritage and tourism in Bulacan."
+disciplines:
+  - mobile
+  - uiux
+  - research
+year: 2025
+technologies:
+  - React Native
+  - Figma
+  - SQLite
+tagline: "THESIS"
+featured: true
+order: 1
+draft: false
+cover_image: images/cover/lakad.png
 links:
   - label: GitHub
-    url: https://github.com/you/my-project
-  - label: Dataset
-    url: https://example.com/dataset
+    url: https://github.com/LeinnarF/lakad
+  - label: Figma
+    url: https://figma.com/file/example
 ---
 
 ## Overview
 
-Regular Markdown from here down — headings, paragraphs, ```code fences```,
-tables, and images all work and get styled to match the design.
+Write your project documentation here in standard Markdown. Headings (`##`, `###`),
+paragraphs, bold/italic text, unordered/ordered lists, blockquotes, and tables are
+fully styled.
 
-Place an image exactly where it belongs in the write-up with `![[path]]`
-(Obsidian-style embed syntax), where `path` is relative to `assets/`
-(same convention as `cover_image`):
+### Code snippets
+Fenced code blocks with language identifiers receive syntax highlighting:
 
-![[images/my-project/screen-1.png|Optional caption shown under the image]]
-
-The caption after `|` is optional — `![[images/my-project/screen-1.png]]`
-alone works too, falling back to the filename as alt text. Put it on its
-own line with a blank line before and after, same as any other block.
+```python
+def calculate_metrics(data: list[float]) -> float:
+    return sum(data) / len(data)
 ```
 
-See `content/data/app-rating-prediction.md` and
-`content/uiux/Internship Project.md` for full working examples.
+### Embedding images
+Images placed in `assets/` can be embedded directly in the body using Obsidian-style syntax:
 
-### Front matter fields
+![[images/cover/lakad.png|Interactive itinerary map view]]
 
-| Field          | Required | Notes                                              |
-|----------------|----------|-----------------------------------------------------|
-| `title`        | yes      |                                                       |
-| `summary`      | yes      | short — used on the homepage card                    |
-| `technologies` | no       | list of tags shown as pills                          |
-| `tagline`      | no       | defaults to the category label (e.g. "DATA & ANALYTICS") |
-| `featured`     | no       | default `false` — featured projects sort first       |
-| `order`        | no       | default `0` — lower sorts first, within the same featured/draft group |
-| `draft`        | no       | default `false` — `true` excludes it from the build   |
-| `cover_image`  | no       | path under `assets/`, shown on the homepage card      |
-| `image_label`  | no       | fallback text on the card if there's no `cover_image` |
-| `links`        | no       | list of `{label, url}` — buttons on the project page  |
+The caption after `|` is optional. Images are automatically converted to optimized WebP
+formats during build.
+```
 
-Malformed front matter (wrong type, missing required field) is reported with a printed warning at build time (or fails the build if `--strict` is enabled).
+### 3. Metadata fields reference
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `title` | string | **Yes** | Project title displayed across cards, lists, detail pages, and `<title>`. |
+| `summary` | string | **Yes** | Concise 1–2 sentence description shown on the homepage index list and project hero. |
+| `disciplines` | list[string] | No | Disciplines covered (e.g. `[data-science, research]`). The **first** entry serves as the primary discipline. Every ID must exist in `content/_site.yaml` (validated in `--strict` mode). |
+| `year` | int / string | No | Completion year (e.g. `2025` or `2024`). Displayed in the project index row and archive. |
+| `technologies` | list[string] | No | Tools, libraries, and frameworks used (e.g. `[Python, PyTorch, Figma]`). Rendered as metadata tags. |
+| `tagline` | string | No | Custom eyebrow label on the project page. Defaults to the primary discipline. |
+| `featured` | boolean | No | Default `false`. If `true`, the project appears in the featured work list on the homepage. |
+| `order` | int | No | Default `0`. Tiebreaker sorting priority within featured or unfeatured groups (lower numbers appear first). |
+| `draft` | boolean | No | Default `false`. Set to `true` to keep work-in-progress drafts from appearing in the build output. |
+| `cover_image` | string | No | Relative path under `assets/` (e.g. `images/cover/lakad.png`). Used on the detail page and as the desktop cursor-following thumbnail preview. |
+| `image_label` | string | No | Fallback text if no `cover_image` is specified. |
+| `links` | list[object] | No | Call-to-action buttons on the project page. Each item requires `label` and `url`. |
+
+### 4. Adding or modifying disciplines
+
+Disciplines are defined centrally in `content/_site.yaml` under `disciplines`:
+
+```yaml
+disciplines:
+  - id: data-science
+    label: "Data Science"
+  - id: uiux
+    label: "UI/UX"
+  - id: mobile
+    label: "Mobile Development"
+  - id: web
+    label: "Web Development"
+  - id: research
+    label: "Research"
+```
+
+To introduce a new discipline (e.g. `game-dev`), simply add it to `_site.yaml`. The site generator will automatically register the new filter and validate project front matter against it without requiring code modifications.
 
 ## Editing site-wide copy
 
@@ -160,8 +200,8 @@ portfolio/
 │   └── deploy.yml
 ├── content/            Source content — Markdown + front matter
 │   ├── _site.yaml      Global site copy and configuration
-│   ├── data/
-│   └── uiux/
+│   ├── app-rating-prediction.md
+│   └── ...             Projects live directly in content/ (no subfolders needed)
 ├── templates/          Jinja2 templates (base, index, project, 404)
 ├── assets/             Source assets (css, images, etc.)
 │   ├── css/style.css

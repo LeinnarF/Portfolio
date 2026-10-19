@@ -2,6 +2,10 @@
 title: App Rating Prediction
 summary: Exploring the factors associated with Google Play Store application ratings.
 tagline: MACHINE LEARNING
+disciplines:
+  - data-science
+  - research
+year: 2024
 technologies:
   - Python
   - PCA

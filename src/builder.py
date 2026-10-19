@@ -129,13 +129,19 @@ def build(
     )
 
     # 4. Normalize projects and group by category
+    disciplines = site_data.get("disciplines", [])
     projects = build_project_models(
         raw_projects,
         image_map=image_map,
+        disciplines_registry=disciplines,
         base_url=base_url,
         strict=strict,
     )
     categories = group_by_category(projects)
+
+    used_discipline_ids = {d for p in projects for d in p.disciplines}
+    active_disciplines = [d for d in disciplines if d["id"] in used_discipline_ids]
+    now_year = datetime.date.today().year
 
     # 5. Setup Jinja template environment
     env = Environment(
@@ -154,20 +160,43 @@ def build(
         home=current_home,
         work=current_work,
         categories=categories,
+        projects=projects,
+        featured_projects=[p for p in projects if p.featured],
+        disciplines=disciplines,
+        active_disciplines=active_disciplines,
         intersection=current_intersection,
         about=current_about,
+        now_year=now_year,
     )
     _write_if_changed(output_dir / "index.html", index_html)
 
-    # 7. Render project detail pages
+    # 7. Render archive page (work.html) if template exists
+    if (templates_dir / "work.html").exists():
+        work_dir = output_dir / "work"
+        work_dir.mkdir(parents=True, exist_ok=True)
+        work_html = env.get_template("work.html").render(
+            site=current_site,
+            work=current_work,
+            projects=projects,
+            disciplines=disciplines,
+            active_disciplines=active_disciplines,
+            now_year=now_year,
+        )
+        _write_if_changed(work_dir / "index.html", work_html)
+
+    # 8. Render project detail pages
     project_template = env.get_template("project.html")
-    expected_slugs: set[str] = set()
+    expected_slugs: set[str] = {"work"}
 
     for project in projects:
         expected_slugs.add(project.slug)
         project_dir = output_dir / project.slug
         project_dir.mkdir(parents=True, exist_ok=True)
-        html = project_template.render(site=current_site, project=project)
+        html = project_template.render(
+            site=current_site,
+            project=project,
+            now_year=now_year,
+        )
         _write_if_changed(project_dir / "index.html", html)
 
     # Clean up orphaned project directories
@@ -176,9 +205,12 @@ def build(
             import shutil
             shutil.rmtree(child, ignore_errors=True)
 
-    # 8. Render 404.html if template exists
+    # 9. Render 404.html if template exists
     if (templates_dir / "404.html").exists():
-        html_404 = env.get_template("404.html").render(site=current_site)
+        html_404 = env.get_template("404.html").render(
+            site=current_site,
+            now_year=now_year,
+        )
         _write_if_changed(output_dir / "404.html", html_404)
 
     # 9. Generate sitemap.xml

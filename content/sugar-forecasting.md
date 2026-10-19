@@ -2,6 +2,10 @@
 title: Forecasting the Price of Refined Sugar in the Philippines
 summary: A time series analysis of the price of refined sugar in the Philippines.
 tagline: TIME SERIES ANALYSIS
+disciplines:
+  - data-science
+  - research
+year: 2024
 technologies:
   - Python
   - Pandas

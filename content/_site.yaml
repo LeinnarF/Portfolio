@@ -4,10 +4,12 @@ base_url: ""
 site:
   name: "Franniel Hilario"
   logo: "FRANNIEL."
-  tagline: "Data & UX"
+  tagline: "Research · Data · Design · Development"
+  email: "hilariofranniel@gmail.com"
   description: >
-    Mathematics graduate specializing in Computer Science, working
-    across data analysis, machine learning, and UI/UX design.
+    Mathematics graduate who researches problems, models them with data,
+    and designs and builds the products that solve them — across data
+    science, UI/UX, and mobile development.
   resume_url: "/resume.pdf"
   footer_links:
     - label: "GitHub"
@@ -17,46 +19,56 @@ site:
     - label: "Email"
       url: "mailto:hilariofranniel@gmail.com"
 
+disciplines:
+  - id: data-science
+    label: "Data Science"
+  - id: uiux
+    label: "UI/UX"
+  - id: mobile
+    label: "Mobile Development"
+  - id: web
+    label: "Web Development"
+  - id: research
+    label: "Research"
+
 home:
-  eyebrow: "MATHEMATICS • DATA • UX"
+  eyebrow: "MATHEMATICS • RESEARCH • DATA • DESIGN • DEVELOPMENT"
   greeting: "Hi, I'm Franniel"
   role_prefix: "I'm a"
   roles:
-    - "Data Analyst"
     - "Data Scientist"
+    - "UI/UX Designer"
+    - "Mobile Developer"
+    - "Researcher"
     - "Mathematician"
-    - "Programmer"
-    - "Game Developer"
   headline: "Hi, I'm Franniel"
   description: >
-    Mathematics graduate specializing in Computer Science, with
-    experience in data analysis, machine learning, and UI/UX design.
-  actions:
-    - label: "View Data Work"
-      url: "#data"
-      style: "primary"
-    - label: "View UI/UX Work"
-      url: "#uiux"
-      style: "secondary"
-  visual_top: "DATA → UX"
-  visual_bottom: "insight → experience"
+    I use math, data, and design to build products that work —
+    from the research question to the shipped app.
+  location: "Bulacan, PH"
+  status: "Open to work"
+  timezone: "Asia/Manila"
 
 work:
   eyebrow: "SELECTED WORK"
   title: "Things I've built."
-  description: "A combination of analytical projects and user-centered design work."
+  description: >
+    Research, data science, design, and development — often
+    in the same project.
 
 intersection:
-  eyebrow: "THE INTERSECTION"
+  eyebrow: "HOW I WORK"
   lines:
-    - text: "Data gives us"
-      highlight: "insight."
-    - text: "Design turns it into"
-      highlight: "action."
+    - text: "Research asks the"
+      highlight: "question."
+    - text: "Data finds the"
+      highlight: "answer."
+    - text: "Design and code make it"
+      highlight: "real."
   description: >
-    I'm interested in the space between quantitative analysis and
-    human-centered design — using data to understand problems and
-    design to make those insights useful.
+    Most problems don't fit inside one discipline. I move between
+    research, analysis, design, and development so that insights
+    don't stop at a report — they end up in something people use.
 
 about:
   eyebrow: "ABOUT"
@@ -69,28 +81,36 @@ about:
       My work spans data analysis, machine learning, visualization,
       UI/UX design, and software development.
   skills:
-    - name: "Data"
+    - name: "Data Science"
       skills_list:
         - "Python"
         - "SQL"
         - "Pandas"
         - "NumPy"
         - "Scikit-learn"
-        - "Visualization"
-    - name: "UX / UI"
+        - "Statsmodels"
+    - name: "UI / UX"
       skills_list:
         - "User Research"
         - "Wireframing"
         - "UI Design"
         - "Prototyping"
+        - "Usability Testing"
     - name: "Development"
       skills_list:
+        - "React Native"
         - "HTML"
         - "CSS"
-        - "C/C++"
         - "Python"
+        - "C/C++"
         - "Git"
         - "Linux"
+    - name: "Research"
+      skills_list:
+        - "Statistical Analysis"
+        - "Time Series"
+        - "Experimental Design"
+        - "Technical Writing"
     - name: "Tools"
       skills_list:
         - "Figma"

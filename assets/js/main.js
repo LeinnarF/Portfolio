@@ -1,15 +1,22 @@
 /**
- * Clean Digital Glitch & Role Scramble
- * Features:
- * - Clean, cohesive typography in the site's accent color
- * - Snappy digital hacker/glitch scramble during transitions
- * - Crisp, steady, perfectly readable settled text
- * - Random reading duration between 0.5s and 1.5s
+ * Portfolio Minimalist Interactions
+ * - Clean digital glitch & role scramble
+ * - Live local time in Hero meta row
+ * - Minimalist discipline filtering for project index
+ * - Scroll reveal animation (IntersectionObserver)
  */
 
 document.addEventListener("DOMContentLoaded", () => {
+    initThemeToggle();
     initCleanGlitchFlicker();
+    initLocalTime();
+    initProjectFiltering();
+    initScrollReveal();
 });
+
+/* =========================================
+   1. CLEAN DIGITAL GLITCH & ROLE SCRAMBLE
+   ========================================= */
 
 function initCleanGlitchFlicker() {
     const flickerEl = document.getElementById("role-flicker");
@@ -26,16 +33,16 @@ function initCleanGlitchFlicker() {
 
     if (!roles || roles.length === 0) {
         roles = [
-            "Data Analyst",
             "Data Scientist",
+            "UI/UX Designer",
+            "Mobile Developer",
+            "Researcher",
             "Mathematician",
-            "Programmer",
-            "Game Developer",
         ];
     }
 
     const GLYPHS = "!<>-_\\/[]{}—=+*^?#0123456789";
-    const SCRAMBLE_TIME = 200; // Fast and snappy digital glitch duration (ms)
+    const SCRAMBLE_TIME = 200; // Fast digital glitch duration (ms)
     const FRAME_RATE = 25;     // Tick rate (ms)
 
     let currentIndex = 0;
@@ -46,8 +53,7 @@ function initCleanGlitchFlicker() {
     }
 
     function getRandomReadingDuration() {
-        // Random reading pause between 0.5s (500ms) and 1.5s (1500ms)
-        return Math.floor(Math.random() * (1500 - 500 + 1)) + 500;
+        return Math.floor(Math.random() * (1600 - 600 + 1)) + 600;
     }
 
     function updatePrefix(role) {
@@ -90,7 +96,6 @@ function initCleanGlitchFlicker() {
 
             if (frame >= totalFrames) {
                 clearInterval(interval);
-                // Settle into crisp, clean text
                 flickerEl.textContent = targetText;
                 onComplete();
             }
@@ -106,10 +111,145 @@ function initCleanGlitchFlicker() {
         });
     }
 
-    // Initialize first role cleanly
     updatePrefix(roles[0]);
     flickerEl.textContent = roles[0];
-
-    // Start cycling with a random reading pause (0.5s - 1.5s)
     setTimeout(cycleNext, getRandomReadingDuration());
+}
+
+/* =========================================
+   2. LIVE LOCAL TIME
+   ========================================= */
+
+function initLocalTime() {
+    const timeEl = document.getElementById("local-time");
+    if (!timeEl) return;
+
+    const timezone = timeEl.dataset.timezone || "Asia/Manila";
+
+    function updateTime() {
+        try {
+            const now = new Date();
+            const formatter = new Intl.DateTimeFormat("en-US", {
+                timeZone: timezone,
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+            });
+            timeEl.textContent = `${formatter.format(now)} local time`;
+        } catch (e) {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, "0");
+            const mins = String(now.getMinutes()).padStart(2, "0");
+            timeEl.textContent = `${hours}:${mins} local time`;
+        }
+    }
+
+    updateTime();
+    setInterval(updateTime, 10000);
+}
+
+/* =========================================
+   3. DISCIPLINE FILTERING
+   ========================================= */
+
+function initProjectFiltering() {
+    const filterContainers = document.querySelectorAll("#project-filters");
+    if (!filterContainers.length) return;
+
+    filterContainers.forEach((filters) => {
+        const buttons = filters.querySelectorAll(".filter-btn");
+        const list = filters.closest(".container")?.querySelector(".project-list");
+        if (!list) return;
+
+        const rows = list.querySelectorAll(".project-row");
+
+        buttons.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const filter = btn.dataset.filter;
+
+                buttons.forEach((b) => {
+                    b.classList.remove("active");
+                    b.setAttribute("aria-selected", "false");
+                });
+                btn.classList.add("active");
+                btn.setAttribute("aria-selected", "true");
+
+                let visibleCount = 1;
+                rows.forEach((row) => {
+                    const rowDisciplines = (row.dataset.disciplines || "").split(" ").filter(Boolean);
+                    const isMatch = filter === "all" || rowDisciplines.includes(filter);
+
+                    if (isMatch) {
+                        row.style.display = "";
+                        const numEl = row.querySelector(".row-num");
+                        if (numEl) {
+                            numEl.textContent = String(visibleCount).padStart(2, "0");
+                        }
+                        visibleCount++;
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            });
+        });
+    });
+}
+
+/* =========================================
+   4. SCROLL REVEAL ANIMATION
+   ========================================= */
+
+function initScrollReveal() {
+    const revealEls = document.querySelectorAll(".reveal-on-scroll");
+    if (!revealEls.length) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        revealEls.forEach((el) => el.classList.add("is-revealed"));
+        return;
+    }
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("is-revealed");
+                    observer.unobserve(entry.target);
+                }
+            });
+        },
+        {
+            threshold: 0.08,
+            rootMargin: "0px 0px -30px 0px",
+        }
+    );
+
+    revealEls.forEach((el) => observer.observe(el));
+}
+
+/* =========================================
+   5. LIGHT / DARK THEME TOGGLE
+   ========================================= */
+
+function initThemeToggle() {
+    const toggleBtn = document.getElementById("theme-toggle");
+    if (!toggleBtn) return;
+
+    toggleBtn.addEventListener("click", () => {
+        const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", newTheme);
+        try {
+            localStorage.setItem("theme", newTheme);
+        } catch (e) {}
+    });
+
+    try {
+        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+        mediaQuery.addEventListener("change", (e) => {
+            if (!localStorage.getItem("theme")) {
+                const newTheme = e.matches ? "dark" : "light";
+                document.documentElement.setAttribute("data-theme", newTheme);
+            }
+        });
+    } catch (e) {}
 }
