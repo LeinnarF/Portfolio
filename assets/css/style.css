@@ -113,9 +113,46 @@ nav {
 }
 
 .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
     font-weight: 800;
     letter-spacing: -0.03em;
     font-size: 1.05rem;
+    color: var(--text);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.logo:hover {
+    opacity: 0.85;
+}
+
+.logo-mark {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.logo:hover .logo-mark {
+    transform: scale(1.06);
+}
+
+.logo-box {
+    fill: var(--surface);
+    stroke: var(--border);
+    transition: stroke 0.2s ease, fill 0.2s ease;
+}
+
+.logo:hover .logo-box {
+    stroke: var(--text);
+}
+
+.logo-text {
+    line-height: 1;
 }
 
 .nav-right {

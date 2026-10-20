@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" href="{{ asset_url('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset_url('css/syntax.css') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset_url('favicon.svg') }}">
     {% block extra_head %}{% endblock %}
 </head>
 
@@ -41,8 +42,13 @@
     <div class="container">
         <nav>
 
-            <a href="{{ url_for('index') }}" class="logo">
-                {{ site.logo }}
+            <a href="{{ url_for('index') }}" class="logo" aria-label="{{ site.name }} homepage">
+                <svg class="logo-mark" viewBox="0 0 28 28" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <rect class="logo-box" x="1.5" y="1.5" width="25" height="25" rx="6.5" stroke-width="1.5"/>
+                    <path d="M8.5 7.5h11M8.5 13.5h8M8.5 7.5v13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="18.5" cy="20.5" r="1.75" fill="var(--accent)"/>
+                </svg>
+                <span class="logo-text">{{ site.logo }}</span>
             </a>
 
             <div class="nav-right">
