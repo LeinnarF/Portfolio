@@ -46,7 +46,6 @@ function initCleanGlitchFlicker() {
     const FRAME_RATE = 25;     // Tick rate (ms)
 
     let currentIndex = 0;
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     function randomGlyph() {
         return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
@@ -65,12 +64,6 @@ function initCleanGlitchFlicker() {
 
     function glitchScrambleTo(targetText, onComplete) {
         updatePrefix(targetText);
-
-        if (prefersReducedMotion) {
-            flickerEl.textContent = targetText;
-            onComplete();
-            return;
-        }
 
         const totalFrames = Math.max(1, Math.floor(SCRAMBLE_TIME / FRAME_RATE));
         let frame = 0;
@@ -202,11 +195,6 @@ function initProjectFiltering() {
 function initScrollReveal() {
     const revealEls = document.querySelectorAll(".reveal-on-scroll");
     if (!revealEls.length) return;
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        revealEls.forEach((el) => el.classList.add("is-revealed"));
-        return;
-    }
 
     const observer = new IntersectionObserver(
         (entries) => {

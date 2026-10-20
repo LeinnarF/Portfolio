@@ -885,18 +885,6 @@ footer {
     transform: translateY(0);
 }
 
-@media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-        animation: none !important;
-        transition: none !important;
-    }
-    .reveal-on-scroll {
-        opacity: 1 !important;
-        transform: none !important;
-        transition: none !important;
-    }
-}
-
 /* =========================
    RESPONSIVE
 ========================= */
