@@ -213,9 +213,12 @@ def build(
         )
         _write_if_changed(output_dir / "404.html", html_404)
 
-    # 9. Generate sitemap.xml
+    # 10. Generate sitemap.xml
     sitemap_xml = _generate_sitemap_xml(projects, current_site, base_url=base_url)
     _write_if_changed(output_dir / "sitemap.xml", sitemap_xml)
+
+    # 11. Create .nojekyll for GitHub Pages compatibility
+    (output_dir / ".nojekyll").touch()
 
     print(
         f"Built {len(projects)} project(s) across {len(categories)} "

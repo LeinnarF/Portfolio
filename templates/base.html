@@ -49,7 +49,11 @@
                 <div class="nav-links">
                     <a href="{{ url_for('index') }}#work">Work</a>
                     <a href="{{ url_for('index') }}#about">About</a>
-                    <a href="{{ site.resume_url | default('#') }}">Resume</a>
+                    {% if site.resume_url and not (site.resume_url.startswith('http://') or site.resume_url.startswith('https://') or site.resume_url.startswith('#')) and base_url %}
+                    <a href="{{ base_url.rstrip('/') }}/{{ site.resume_url.lstrip('/') }}">Resume</a>
+                    {% else %}
+                    <a href="{{ site.resume_url | default('#') }}"{% if site.resume_url and site.resume_url.startswith('http') %} target="_blank" rel="noopener"{% endif %}>Resume</a>
+                    {% endif %}
                     <a href="{{ url_for('index') }}#contact">Contact</a>
                 </div>
 
