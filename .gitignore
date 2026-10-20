@@ -5,6 +5,7 @@ static/
 draft/
 plan.md
 doc/
+temp/
 
 # Python
 __pycache__/

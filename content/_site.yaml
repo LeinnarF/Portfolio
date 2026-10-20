@@ -30,6 +30,8 @@ disciplines:
     label: "Web Development"
   - id: research
     label: "Research"
+  - id: development
+    label: "Development"
 
 home:
   eyebrow: "MATHEMATICS • RESEARCH • DATA • DESIGN • DEVELOPMENT"

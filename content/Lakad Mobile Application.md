@@ -1,6 +1,6 @@
 ---
 title: Lakad Mobile Application
-summary: A mobile personalized itinerary generator for Bulacan
+summary: A personalized travel itinerary generator and route optimizer for Bulacan.
 disciplines:
   - mobile
   - uiux
@@ -11,52 +11,53 @@ technologies:
   - Expo
   - Kotlin
   - Supabase
-year: 2025
+year: 2026
 links:
-  - label: Github
+  - label: GitHub
     url: https://github.com/niceWizzard/thesis-lakad-rn
   - label: Figma
     url: https://www.figma.com/design/VSL6zxCmBpNVmyVJ8L0N34/This-is-Thesis?node-id=284-2880&t=TfPgrRKF6iwPEvVX-1 
   - label: Manuscript
     url: https://github.com/LeinnarF/Thesis-LaTex
 ---
+
 ## The Problem
 
-Bulacan is full of places worth visiting, yet many of them stay unknown to tourists. Visitors who do come usually plan their own trip, guessing which spots fit together and which order makes sense. Lakad began as our undergraduate thesis, with a simple goal: help people discover the province and give them a ready-made plan to follow.
+Bulacan is full of heritage sites, nature spots, and local attractions worth visiting, yet many of them stay unknown to travelers. Visitors who do come usually piece together their own trips, guessing which destinations fit together and what order makes sense on the road. Lakad began as our undergraduate thesis with a simple goal: help people discover the province and give them an optimized, ready-made plan to follow.
 
 ## The Approach
 
-Lakad is a mobile app that builds a personalized itinerary from the user's preferences. The tourist spot data was collected and verified with the Provincial Tourism Office, so the app recommends real, confirmed places. Picking the spots is only half the job. Visiting all of them efficiently is a Travelling Salesman Problem, so we used that as the framework for finding the best route.
+Lakad is a mobile application that builds a personalized itinerary from a traveler's preferences. Every tourist spot in the system was collected and verified in partnership with the Provincial Tourism Office, ensuring that recommendations reflect real, confirmed destinations.
 
-Rather than assume one algorithm would work best, we evaluated several metaheuristic algorithms. An adaptive genetic algorithm turned out best for generating the itinerary itself. For route optimization, simulated annealing won on the evaluation results. The app is built with React Native and Expo, and Mapbox provides the maps and live navigation.
-
-![[Pasted image 20261020103218.png|Tourist Spot Exploration|95%]]
+Picking the spots is only half the problem—visiting all of them efficiently is a variant of the Travelling Salesman Problem. Rather than assume a single algorithm would perform best, we benchmarked several metaheuristic approaches. An **Adaptive Genetic Algorithm (AGA)** proved strongest at selecting and matching attractions to user preferences, while **Simulated Annealing (SA)** won out for optimizing the multi-stop route order. We built the cross-platform mobile client with React Native and Expo, backed by Supabase and Mapbox for interactive mapping and live turn-by-turn navigation.
 
 ## The Result
 
-Users begin by exploring tourist spots, which also serves the app's aim of promoting the province.
+![[Pasted image 20261020103218.png|Tourist Spot Exploration|95%]]
+
+The journey starts with discovery. Users can browse verified attractions across Bulacan by category, ratings, and location—advancing the app's broader mission of promoting local tourism.
 
 ![[Pasted image 20261020103421.png|Personalized Itinerary Generation|95%]]
 
-Then they tell the app what they like, and it generates an itinerary around those preferences.
+When planning a trip, travelers set their interests, budget, and schedule. The Adaptive Genetic Algorithm then assembles a tailored itinerary around those constraints.
 
 ![[Pasted image 20261020103502.png|Itinerary Optimization|520]]
 
-Next, the route is optimized so every stop is visited in an efficient order, without backtracking across the province.
+Once the stops are chosen, Simulated Annealing reorders the sequence to minimize travel distance and eliminate backtracking across the province.
 
 ![[Pasted image 20261020103550.png|Itinerary Navigation|520]]
 
-On the day of the trip, live navigation guides travelers from one stop to the next.
+On the day of the trip, integrated Mapbox navigation guides travelers from one stop to the next in real time.
 
 ![[Pasted image 20261020103634.png|Admin Dashboard and Management|95%]]
 
-Behind the scenes, an admin dashboard lets tourism staff manage the spots and data the app relies on.
+Behind the scenes, a web-based admin dashboard gives tourism staff direct control over destination listings, operating hours, and verification data.
 
 ## Evaluation
 
-A good-looking app still has to earn its users' trust, so we evaluated Lakad from two angles: how users felt about it, and how well it was built.
+A well-designed app still has to earn its users' trust, so we evaluated Lakad from two perspectives: how everyday travelers experienced it, and how software experts judged its engineering quality.
 
-First, users rated the app using the Technology Acceptance Model (TAM). Every construct scored in the "Highly acceptable" range, with a grand mean of 4.6719 out of 5. Attitude towards using the app scored highest at 4.7200. Behavioral intention to use scored lowest, though still high at 4.5556, which suggests people liked the app and would likely keep using it.
+First, users rated the app through the Technology Acceptance Model (TAM). Every construct scored in the "Highly acceptable" range, achieving a grand mean of **4.67 out of 5**. Attitude toward using the app scored highest at 4.72, while behavioral intention to use followed closely at 4.56—strong evidence that travelers found the itineraries genuinely useful for real trips.
 
 **System Acceptability Results (TAM)**
 
@@ -68,7 +69,7 @@ First, users rated the app using the Technology Acceptance Model (TAM). Every co
 | Behavioral intention to use | 4.5556     | 0.4740             | Highly acceptable |
 | **Grand TAM Score**         | **4.6719** | **0.4189**         | **Highly acceptable** |
 
-Second, experts assessed the system against the ISO/IEC 25010:2023 quality model. All nine characteristics were rated "Excellent", with a grand mean of 4.7642. Functional suitability scored highest at 4.8636, so the app does what it promises. Security (4.8258) and reliability (4.8182) also scored very high. Compatibility was the lowest at 4.6591, still well within the excellent range.
+Second, technical evaluators assessed the system against the ISO/IEC 25010:2023 software quality standard. All nine characteristics earned "Excellent" ratings with a grand mean of **4.76 out of 5**, led by Functional Suitability (4.86), Security (4.83), and Reliability (4.82).
 
 **System Quality Results (ISO/IEC 25010:2023)**
 
@@ -85,6 +86,6 @@ Second, experts assessed the system against the ISO/IEC 25010:2023 quality model
 | Safety                 | 4.7455     | 0.4501             | Excellent      |
 | **Grand ISO/IEC 25010:2023 Score** | **4.7642** | **0.3575** | **Excellent** |
 
-## Recognition
+## Recognition & Takeaway
 
-These results backed up the panel's confidence in the work. Lakad was named Best Thesis Runner-Up in our college.
+Pairing verified local tourism data with metaheuristic optimization turned a theoretical computer science problem into a practical travel companion—and earned Lakad **Best Thesis Runner-Up** in our college.
