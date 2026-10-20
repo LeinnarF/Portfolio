@@ -116,9 +116,6 @@ technologies:
   - React Native
   - Figma
   - SQLite
-tagline: "THESIS"
-featured: true
-order: 1
 draft: false
 links:
   - label: GitHub
@@ -159,9 +156,6 @@ formats during build.
 | `disciplines` | list[string] | No | Disciplines covered (e.g. `[data-science, research]`). The **first** entry serves as the primary discipline. Every ID must exist in `content/_site.yaml` (validated in `--strict` mode). |
 | `year` | int / string | No | Completion year (e.g. `2025` or `2024`). Displayed in the project index row and archive. |
 | `technologies` | list[string] | No | Tools, libraries, and frameworks used (e.g. `[Python, PyTorch, Figma]`). Rendered as metadata tags. |
-| `tagline` | string | No | Custom eyebrow label on the project page. Defaults to the primary discipline. |
-| `featured` | boolean | No | Default `false`. If `true`, the project appears in the featured work list on the homepage. |
-| `order` | int | No | Default `0`. Tiebreaker sorting priority within featured or unfeatured groups (lower numbers appear first). |
 | `draft` | boolean | No | Default `false`. Set to `true` to keep work-in-progress drafts from appearing in the build output. |
 | `links` | list[object] | No | Call-to-action buttons on the project page. Each item requires `label` and `url`. |
 

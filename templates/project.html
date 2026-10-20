@@ -23,7 +23,7 @@
                 {% if project.discipline_labels %}
                 {{ project.discipline_labels | join(' · ') }}
                 {% else %}
-                {{ project.tagline | default(project.category_label) }}
+                {{ project.category_label }}
                 {% endif %}
             </div>
 

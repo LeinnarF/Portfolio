@@ -1,18 +1,15 @@
 ---
 title: Lakad Mobile Application
 summary: A mobile personalized itinerary generator for Bulacan
-tagline: THESIS
 disciplines:
   - mobile
   - uiux
   - research
-year: 2025
 technologies:
   - React-Native
   - Figma
   - Smart Phone
-featured: true
-order: 2
+year: 2025
 ---
 ## Overview
 

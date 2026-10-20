@@ -1,7 +1,6 @@
 ---
 title: Internship Project
 summary: A real-world UI/UX project developed during my internship.
-tagline: INTERNSHIP
 disciplines:
   - uiux
   - research
@@ -10,8 +9,6 @@ technologies:
   - UX Research
   - UI Design
   - Prototyping
-featured: true
-order: 1
 links:
   - label: Figma
     url: https://www.figma.com/design/1gTxpORAa67VcKBpSLCD0m/ESO--Copy-?node-id=0-1&t=d7oNZmF288BKe1Aw-1

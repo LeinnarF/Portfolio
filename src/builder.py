@@ -161,7 +161,7 @@ def build(
         work=current_work,
         categories=categories,
         projects=projects,
-        featured_projects=[p for p in projects if p.featured],
+        featured_projects=projects,
         disciplines=disciplines,
         active_disciplines=active_disciplines,
         intersection=current_intersection,

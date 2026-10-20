@@ -165,6 +165,9 @@ def build_project_models(
         data.pop("cover_width", None)
         data.pop("cover_height", None)
         data.pop("image_label", None)
+        data.pop("tagline", None)
+        data.pop("order", None)
+        data.pop("featured", None)
 
         html_content = render_markdown_body(body_raw, image_map=image_map, base_url=base_url)
         data["content"] = html_content
@@ -183,7 +186,14 @@ def build_project_models(
 
         projects.append(project)
 
-    projects.sort(key=lambda p: (not p.featured, p.order, p.title.lower()))
+    def _project_sort_key(p: Project) -> tuple[int, str]:
+        try:
+            year_val = int(p.year) if p.year is not None else 0
+        except (ValueError, TypeError):
+            year_val = 0
+        return (-year_val, p.title.lower())
+
+    projects.sort(key=_project_sort_key)
     return projects
 
 

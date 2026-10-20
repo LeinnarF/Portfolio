@@ -42,14 +42,11 @@ class Project(BaseModel):
 
     # optional metadata
     description: Optional[str] = None  # longer description, if summary isn't enough
-    tagline: Optional[str] = None  # overrides the category label on cards/detail page
     technologies: list[str] = Field(default_factory=list)
     disciplines: list[str] = Field(default_factory=list)
     discipline_labels: list[str] = Field(default_factory=list)
     year: Optional[int | str] = None
     date: Optional[str] = None
-    order: int = 0
-    featured: bool = False
     draft: bool = False
 
     # links

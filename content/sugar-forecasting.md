@@ -1,7 +1,6 @@
 ---
 title: Forecasting the Price of Refined Sugar in the Philippines
 summary: A time series analysis of the price of refined sugar in the Philippines.
-tagline: TIME SERIES ANALYSIS
 disciplines:
   - data-science
   - research
@@ -11,8 +10,6 @@ technologies:
   - Pandas
   - Matplotlib
   - Statsmodels
-featured: true
-order: 2
 ---
 
 ## Overview
