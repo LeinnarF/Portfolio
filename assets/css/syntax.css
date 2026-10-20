@@ -52,32 +52,6 @@
     --syn-hll: rgba(110, 118, 129, 0.2);
 }
 
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-        --syn-text: #e6edf3;
-        --syn-comment: #8b949e;
-        --syn-keyword: #ff7b72;
-        --syn-string: #a5d6ff;
-        --syn-number: #79c0ff;
-        --syn-func: #d2a8ff;
-        --syn-class: #ffa657;
-        --syn-builtin: #79c0ff;
-        --syn-operator: #ff7b72;
-        --syn-punct: #e6edf3;
-        --syn-variable: #e6edf3;
-        --syn-tag: #7ee787;
-        --syn-attr: #79c0ff;
-        --syn-constant: #79c0ff;
-        --syn-regex: #7ee787;
-        --syn-diff-del: #ffa198;
-        --syn-diff-del-bg: rgba(248, 81, 73, 0.15);
-        --syn-diff-ins: #56d364;
-        --syn-diff-ins-bg: rgba(46, 160, 67, 0.15);
-        --syn-lineno: #6e7681;
-        --syn-hll: rgba(110, 118, 129, 0.2);
-    }
-}
-
 /* ==========================================================================
    Codehilite Container & Rules
    ========================================================================== */

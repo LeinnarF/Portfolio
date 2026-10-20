@@ -242,14 +242,4 @@ function initThemeToggle() {
             localStorage.setItem("theme", newTheme);
         } catch (e) {}
     });
-
-    try {
-        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-        mediaQuery.addEventListener("change", (e) => {
-            if (!localStorage.getItem("theme")) {
-                const newTheme = e.matches ? "dark" : "light";
-                document.documentElement.setAttribute("data-theme", newTheme);
-            }
-        });
-    } catch (e) {}
 }

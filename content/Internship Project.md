@@ -3,10 +3,8 @@ title: Internship Project
 summary: A real-world UI/UX project developed during my internship.
 disciplines:
   - uiux
-  - research
 year: 2024
 technologies:
-  - UX Research
   - UI Design
   - Prototyping
 links:

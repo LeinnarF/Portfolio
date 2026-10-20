@@ -31,18 +31,6 @@
     --header-bg: rgba(247, 247, 245, 0.9);
 }
 
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-        --bg: #0f0f0f;
-        --surface: #161616;
-        --text: #ededed;
-        --muted: #8a8a8a;
-        --border: #262626;
-        --accent: #818cf8;
-        --header-bg: rgba(15, 15, 15, 0.9);
-    }
-}
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -182,10 +170,10 @@ nav {
     display: block;
 }
 
-[data-theme="light"] .theme-toggle .sun-icon {
+.theme-toggle .sun-icon {
     display: none;
 }
-[data-theme="light"] .theme-toggle .moon-icon {
+.theme-toggle .moon-icon {
     display: block;
 }
 
@@ -194,23 +182,6 @@ nav {
 }
 [data-theme="dark"] .theme-toggle .moon-icon {
     display: none;
-}
-
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .theme-toggle .sun-icon {
-        display: block;
-    }
-    :root:not([data-theme="light"]) .theme-toggle .moon-icon {
-        display: none;
-    }
-}
-@media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) .theme-toggle .sun-icon {
-        display: none;
-    }
-    :root:not([data-theme="dark"]) .theme-toggle .moon-icon {
-        display: block;
-    }
 }
 
 /* =========================
