@@ -38,19 +38,19 @@ At the heart of the app is **double progression**. Instead of guessing when to a
 
 ## The Result
 
-![[Pasted image 20261020134050.png|Workout Logging|20%]]
+![[Pasted image 20261020134050.png|Workout Logging|40%]]
 
 The Log tab is where lifters spend most of their time, so every tap is minimized. Exercises sit in a clean accordion layout tagged by movement category (Upper, Lower, Core, Push, Pull, Legs). Working weights prefill automatically from the previous session, and target set limits prevent accidental over-logging by marking completed lifts with a clear "Done" badge. Hitting the top of a rep range across all sets triggers a one-tap overload prompt, while long-pressing any exercise opens quick controls to adjust target sets, rep ranges, weight increments, or archive status.
 
-![[Pasted image 20261020134141.png|Rest Timer|20%]]
+![[Pasted image 20261020134141.png|Rest Timer|40%]]
 
 Between sets, the Rest Timer pairs a high-contrast vector progress dial with clear state indicators (`READY`, `RESTING`, `PAUSED`). One-tap presets from `30s` to `3:00` handle standard rest intervals, alongside custom minute and second inputs for specialized programming. A shared timer context keeps the countdown running across tabs, prevents the screen from sleeping, and fires an audio chime and haptic pulse the moment rest is over.
 
-![[Pasted image 20261020134218.png|Weight Converter|20%]]
+![[Pasted image 20261020134218.png|Weight Converter|40%]]
 
 Because gyms often mix pound and kilogram equipment, the Convert tab translates weights in both directions in real time. Its built-in plate calculator breaks down exactly which plates to load on each side of the bar, paired with quick presets for common barbell milestones and dumbbell racks so you never have to do plate math between sets.
 
-![[Pasted image 20261020134301.png|Progress Tracker|20%]]
+![[Pasted image 20261020134301.png|Progress Tracker|40%]]
 
 The Stats tab turns raw set logs into clear feedback across three views: Overview, Charts, and History. Overview surfaces lifetime volume and set totals, a weekly consistency streak, a Progression Radar showing which lifts are ready for a weight jump, and a Personal Records trophy case. Charts filter by exercise and timeframe (`4W`, `3M`, `1Y`, `All Time`) to plot weekly rep volume, estimated 1-Rep Max trends via the Epley formula, and session workload. History organizes completed workouts by calendar date with concise rep breakdowns and top weights.
 
