@@ -57,8 +57,14 @@ function initCleanGlitchFlicker() {
 
     function updatePrefix(role) {
         if (!prefixEl) return;
-        const firstLetter = role.trim()[0]?.toLowerCase();
-        const isVowel = ["a", "e", "i", "o", "u"].includes(firstLetter);
+        const trimmed = role.trim();
+        // UI/UX starts with consonant sound /j/ ("You-Eye"), so stay with "I'm a"
+        if (/^u[ix]/i.test(trimmed)) {
+            prefixEl.textContent = "I'm a";
+            return;
+        }
+        const firstLetter = trimmed[0]?.toLowerCase();
+        const isVowel = ["a", "e", "i", "o"].includes(firstLetter);
         prefixEl.textContent = isVowel ? "I'm an" : "I'm a";
     }
 
