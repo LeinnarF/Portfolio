@@ -142,9 +142,20 @@ def calculate_metrics(data: list[float]) -> float:
 Images placed in `assets/` can be embedded directly in the body using Obsidian-style syntax:
 
 ![[images/lakad.png|Interactive itinerary map view]]
+![[images/lakad.png|Interactive itinerary map view|500]]
+![[images/lakad.png|Interactive itinerary map view|500x100]]
+![[images/lakad.png|Interactive itinerary map view|80%]]
+![[images/lakad.png|Interactive itinerary map view|80%x90%]]
+![[images/lakad.png|Interactive itinerary map view|100%x30%]]
 
-The caption after `|` is optional. Images are automatically converted to optimized WebP
-formats during build.
+- The caption and size dividers use `|` (e.g. `![[Image_path|caption|size]]`).
+- Providing a single number like `500` resizes the image width to 500px while retaining its original aspect ratio.
+- Providing width and height like `500x100` resizes both dimensions and changes the aspect ratio.
+- Providing a percentage like `80%` sets the width to 80% while retaining the aspect ratio.
+- Providing two percentages like `80%x90%` or `100%x30%` changes the aspect ratio relative to the percentages (e.g. `100%x30%` preserves full width while reducing height to 30%).
+- The caption parameter is optional (e.g. `![[images/lakad.png|80%]]`).
+- All images are automatically centered and responsively bounded to the container.
+- Images are automatically converted to optimized WebP formats during build.
 ```
 
 ### 3. Metadata fields reference

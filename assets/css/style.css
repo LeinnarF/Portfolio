@@ -787,27 +787,41 @@ footer {
 }
 
 .project-body img {
-    max-width: 80%;
+    max-width: 100%;
     height: auto;
     margin: 24px auto;
-    border-radius: 12px;
-    border: 1px solid var(--border);
+    border-radius: 0;
+    border: none;
     display: block;
 }
 
 .project-body figure.gallery-item {
     margin: 32px auto;
-    max-width: 80%;
+    max-width: 100%;
     width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.project-body figure.gallery-item.is-resized {
+    max-width: 100%;
 }
 
 .project-body figure.gallery-item img {
     width: 100%;
     max-width: 100%;
     height: auto;
-    border-radius: 12px;
-    border: 1px solid var(--border);
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 0;
+    border: none;
     display: block;
+}
+
+.project-body figure.gallery-item.is-resized img {
+    width: auto;
 }
 
 .project-body figcaption,
